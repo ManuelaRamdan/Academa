@@ -1,0 +1,14 @@
+
+:root {
+
+--color1: #e6f99d; /* Fondo claro */
+    --color2: #7fda89; /* Acentos suaves */
+    --color3: #259073; /* Acento fuerte / botones */
+    --color4: #c8e98e; /* Tonos intermedios */
+    --color5: #041122; /* Texto principal / sidebar */
+
+
+    /* Sombras y extras coherentes */
+    --shadow: rgba(0,0,0,0.08);
+    --shadow-soft: rgba(0,0,0,0.05);
+}

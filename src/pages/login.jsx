@@ -1,68 +1,82 @@
-import { useState, useContext } from "react";
-//useState: sirve para manejar valores que cambian en la pantalla (email y password).
+import { useState, useContext, useEffect } from "react";
 import { loginRequest } from "../services/authService";
-//loginRequest: es la función que hace el POST a tu API.
-
 import { AuthContext } from "../context/AuthContext";
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import "../styles/styles.css"; 
 
 function Login() {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    useEffect(() => {
+        if (location.state?.logoutSuccess) {
+            setSuccessMessage("Cierre de sesión exitoso.");
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location, navigate]);
 
     const handleSubmit = async (e) => {
-        //e.preventDefault() evita que el form recargue la página.
         e.preventDefault();
+        setLoading(true);
+        setErrorMessage("");
+        setSuccessMessage("");
 
         try {
             const response = await loginRequest(email, password);
-            console.log("Login exitoso:", response.data);
             const { token, usuario } = response.data;
 
-            // Guardar token + usuario en el contexto
             login(token, usuario);
 
+            if (usuario.rol === "administrador") navigate("/admin");
+            if (usuario.rol === "profesor") navigate("/profesor");
+            if (usuario.rol === "padre") navigate("/padre");
 
-            // Redirección según rol
-            if (usuario.rol === "administrador") {
-                navigate("/admin");
-            } else if (usuario.rol === "profesor") {
-                navigate("/profesor");
-            } else if (usuario.rol === "padre") {
-                navigate("/padre");
-            } else {
-                alert("Rol no reconocido");
-            }
         } catch (error) {
-            //console.error(error);
-            alert("Error en login");
+            setErrorMessage("Credenciales incorrectas");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
+        <div className="page-wrapper">
+            <div className="card">
+                <h2>Iniciar Sesión</h2>
 
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                {successMessage && <p className="msg-success">{successMessage}</p>}
+                {errorMessage && <p className="msg-error">{errorMessage}</p>}
 
-            <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
 
-            <button type="submit">Ingresar</button>
-        </form>
+                    <input
+                        type="password"
+                        placeholder="Contraseña"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Cargando..." : "Ingresar"}
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 }
 

@@ -1,9 +1,10 @@
-// src/pages/Padre/PadreLayout.jsx
+// src/pages/Padre/PadrePanel.jsx
 import { useEffect, useState } from "react";
 import { getHijosPadre, getAlumnoById } from "../../services/padreService";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/PanelPadre.css";
 
-export default function PadreLayout() {
+export default function PadrePanel() {
     const { logout } = useAuth();
 
     const [hijos, setHijos] = useState([]);
@@ -12,7 +13,6 @@ export default function PadreLayout() {
     const [error, setError] = useState(null);
     const [hijoSeleccionado, setHijoSeleccionado] = useState(null);
 
-    // Cargar hijos
     useEffect(() => {
         const cargar = async () => {
             try {
@@ -20,11 +20,9 @@ export default function PadreLayout() {
                 setHijos(res.data.hijos);
 
                 if (res.data.hijos.length > 0) {
-                    // Selecciona el primero automáticamente
                     seleccionarHijo(res.data.hijos[0].id);
                 }
-
-            } catch (err) {
+            } catch {
                 setError("No se pudieron cargar los hijos");
             } finally {
                 setLoading(false);
@@ -38,7 +36,6 @@ export default function PadreLayout() {
         try {
             setLoading(true);
             setHijoSeleccionado(id);
-
             const res = await getAlumnoById(id);
             setAlumno(res.data);
         } catch {
@@ -48,61 +45,33 @@ export default function PadreLayout() {
         }
     };
 
-    if (loading && !alumno) return <h2>Cargando...</h2>;
-    if (error) return <p style={{ color: "red" }}>{error}</p>;
+    if (loading && !alumno) return <h2 className="loading">Cargando...</h2>;
+    if (error) return <p className="error">{error}</p>;
 
     return (
-        <div style={{ display: "flex", height: "100vh" }}>
-            {/* MENÚ LATERAL */}
-            <aside
-                style={{
-                    width: "250px",
-                    background: "#f4f4f4",
-                    padding: "15px",
-                    borderRight: "1px solid #ccc"
-                }}
-            >
-                <h2>Mis Hijos</h2>
+        <div className="padre-layout">
+            
+            <aside className="sidebar">
+                <h2 className="sidebar-title">Mis Hijos</h2>
 
                 {hijos.map(h => (
                     <button
                         key={h.id}
                         onClick={() => seleccionarHijo(h.id)}
-                        style={{
-                            width: "100%",
-                            padding: "10px",
-                            marginBottom: "10px",
-                            background: hijoSeleccionado === h.id ? "#ddd" : "white",
-                            border: "1px solid #aaa",
-                            cursor: "pointer",
-                            borderRadius: "5px"
-                        }}
+                        className={`sidebar-btn ${hijoSeleccionado === h.id ? "active" : ""}`}
                     >
                         {h.nombre}
                     </button>
                 ))}
 
-                <button
-                    onClick={logout}
-                    style={{
-                        marginTop: "20px",
-                        width: "100%",
-                        padding: "10px",
-                        background: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer"
-                    }}
-                >
+                <button onClick={logout} className="logout-btn">
                     Cerrar sesión
                 </button>
             </aside>
 
-            {/* PANEL DERECHO */}
-            <main style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
+            <main className="content">
                 {loading ? (
-                    <h2>Cargando datos del alumno...</h2>
+                    <h2 className="loading">Cargando datos del alumno...</h2>
                 ) : alumno ? (
                     <AlumnoInfo alumno={alumno} />
                 ) : (
@@ -113,42 +82,33 @@ export default function PadreLayout() {
     );
 }
 
-// Un componente separado para verlo más claro
 function AlumnoInfo({ alumno }) {
-    const [acordeonAbierto, setAcordeonAbierto] = useState(null);
+    const [abierto, setAbierto] = useState(null);
 
     return (
-        <div>
-            <h1>{alumno.nombre}</h1>
-            <p><strong>DNI:</strong> {alumno.dni}</p>
+        <div className="alumno-card">
+            <h1 className="alumno-nombre">{alumno.nombre}</h1>
+            <p className="alumno-dato"><strong>DNI:</strong> {alumno.dni}</p>
 
-            <h2>Materias</h2>
+            <h2 className="seccion-titulo">Materias</h2>
 
             {alumno.materias.map((mat, index) => {
-                const abierto = acordeonAbierto === index;
+                const isOpen = abierto === index;
 
                 return (
-                    <div key={mat._id} style={{ marginBottom: "10px" }}>
+                    <div key={mat._id} className="materia-item">
+                        
                         <div
-                            onClick={() =>
-                                setAcordeonAbierto(abierto ? null : index)
-                            }
-                            style={{
-                                cursor: "pointer",
-                                background: "#eee",
-                                padding: "10px",
-                                borderRadius: "5px"
-                            }}
+                            className="materia-header"
+                            onClick={() => setAbierto(isOpen ? null : index)}
                         >
-                            <strong>
-                                {mat.nombreCurso} {mat.nivel}{mat.division} {mat.anio}
-                            </strong>
+                            {mat.nombreCurso} {mat.nivel}{mat.division} {mat.anio}
                         </div>
 
-                        {abierto && (
-                            <div style={{ padding: "10px", border: "1px solid #ccc" }}>
+                        {isOpen && (
+                            <div className="materia-body">
                                 <h3>Notas</h3>
-                                <table border="1" cellPadding="6">
+                                <table className="tabla">
                                     <thead>
                                         <tr>
                                             <th>Tipo</th>
@@ -166,7 +126,7 @@ function AlumnoInfo({ alumno }) {
                                 </table>
 
                                 <h3>Asistencias</h3>
-                                <table border="1" cellPadding="6">
+                                <table className="tabla">
                                     <thead>
                                         <tr>
                                             <th>Fecha</th>

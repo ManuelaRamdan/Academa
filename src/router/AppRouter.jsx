@@ -19,9 +19,6 @@ function AppRouter() {
                 <Route path="/" element={<Login />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profesor" element={<Profesor />} />
-
-
-
                 <Route
                     path="/padre"
                     element={

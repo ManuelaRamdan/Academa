@@ -1,0 +1,164 @@
+@import "./color.css";
+
+/* ============================
+   LAYOUT GENERAL
+============================ */
+.padre-layout {
+    display: flex;
+    height: 100vh;
+    background: var(--color1);
+}
+
+/* ============================
+   SIDEBAR
+============================ */
+.sidebar {
+    width: 270px;
+    background: var(--color5);
+    color: white;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-right: 3px solid var(--color2);
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    color: var(--color1);
+}
+
+.sidebar-btn {
+    padding: 14px;
+    background: var(--color2);
+    border-radius: 12px;
+    color: var(--color5);
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.sidebar-btn:hover {
+    background: var(--color3);
+}
+
+.sidebar-btn.active {
+    background: var(--color4);
+    color: white;
+    font-weight: 700;
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding: 14px;
+    background: var(--color3);
+    color: var(--color5);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.logout-btn:hover {
+    background: var(--color4);
+    color: white;
+}
+
+/* ============================
+   CONTENT
+============================ */
+.content {
+    flex: 1;
+    padding: 45px;
+    overflow-y: auto;
+}
+
+/* ============================
+   TARJETAS
+============================ */
+.alumno-card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    border: 2px solid var(--color2);
+    box-shadow: 0px 6px 20px var(--shadow);
+}
+
+.alumno-nombre {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color5);
+}
+
+.seccion-titulo {
+    margin-top: 25px;
+    font-size: 24px;
+    color: var(--color3);
+}
+
+/* ============================
+   ACORDEÓN
+============================ */
+.materia-item {
+    background: color-mix(in srgb, var(--color2) 40%, transparent);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 15px;
+    border-left: 5px solid var(--color5);
+    box-shadow: 0px 3px 12px var(--shadow-soft);
+}
+
+.materia-header {
+    padding: 14px;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--color3) 40%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--color5);
+    transition: 0.25s;
+}
+
+.materia-header:hover {
+    background: var(--color4);
+    color: white;
+}
+
+.materia-body {
+    margin-top: 12px;
+    padding: 14px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--color3);
+}
+
+/* ============================
+   TABLAS
+============================ */
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabla th, .tabla td {
+    padding: 10px;
+    border-bottom: 1px solid #bbb;
+}
+
+/* ============================
+   ESTADOS
+============================ */
+.loading {
+    font-size: 22px;
+}
+
+.error {
+    color: var(--color5);
+    font-size: 18px;
+}
