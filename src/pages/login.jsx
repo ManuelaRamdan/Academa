@@ -20,11 +20,12 @@ function Login() {
 
         try {
             const response = await loginRequest(email, password);
-            //console.log("Login exitoso:", response.data);
+            console.log("Login exitoso:", response.data);
             const { token, usuario } = response.data;
 
             // Guardar token + usuario en el contexto
             login(token, usuario);
+
 
             // Redirección según rol
             if (usuario.rol === "administrador") {
