@@ -5,14 +5,20 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from '../pages/login';
+import Admin from "../pages/admin/admin";
+import Profesor from "../pages/profesor/profesor";
+import Padre from "../pages/padre/padre";
+import { useAuth } from "../context/AuthContext";
 
 function AppRouter() {
+    const { user } = useAuth();
     return (
         <BrowserRouter> {/* Es como “el modo navegación” de la app.*/}
             <Routes> {/* Es un contenedor donde van todas tus rutas */}
                 <Route path="/" element={<Login />} />
-
-                {/* Luego agregamos más rutas */}
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/profesor" element={<Profesor />} />
+                <Route path="/padre" element={<Padre />} />
             </Routes>
         </BrowserRouter>
     );
