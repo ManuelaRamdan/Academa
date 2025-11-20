@@ -1,33 +1,47 @@
-// BrowserRouter -> Es el contenedor principal que habilita el sistema de navegación de React Router.
-//Routes -> Es un grupo donde se colocan todas las rutas disponibles en tu app.
-// Route -> Define una ruta
-// Login -> Es la página que se mostrará cuando el usuario vaya a /.
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import Login from '../pages/login';
 import Admin from "../pages/admin/admin";
-import Profesor from "../pages/profesor/profesor";
+import Profesor from "../pages/profesor/ProfesorPanel";
 import PadrePanel from "../pages/padre/PadrePanel";
-import { useAuth } from "../context/AuthContext";
-import ProtectedRoutePadre from "./ProtectRoutePadre";
+
+import ProtectRoute from "./ProtectRoute";
 
 function AppRouter() {
-    const { user } = useAuth();
     return (
-        <BrowserRouter> {/* Es como “el modo navegación” de la app.*/}
-            <Routes> {/* Es un contenedor donde van todas tus rutas */}
+        <BrowserRouter>
+            <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/profesor" element={<Profesor />} />
+
+                {/* RUTA ADMIN */}
                 <Route
-                    path="/padre"
+                    path="/admin"
                     element={
-                        <ProtectedRoutePadre allowedRole="Padre">
-                            <PadrePanel />
-                        </ProtectedRoutePadre>
+                        <ProtectRoute allowedRole="admin">
+                            <Admin />
+                        </ProtectRoute>
                     }
                 />
 
+                {/* RUTA PROFESOR */}
+                <Route
+                    path="/profesor"
+                    element={
+                        <ProtectRoute allowedRole="profesor">
+                            <Profesor />
+                        </ProtectRoute>
+                    }
+                />
+
+                {/* RUTA PADRE */}
+                <Route
+                    path="/padre"
+                    element={
+                        <ProtectRoute allowedRole="padre">
+                            <PadrePanel />
+                        </ProtectRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     );

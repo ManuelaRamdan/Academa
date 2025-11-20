@@ -1,0 +1,84 @@
+.profesor-panel {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+
+.sidebar {
+    background: #1f1f1f;
+    padding: 20px;
+    border-right: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.materia-btn {
+    width: 100%;
+    padding: 10px;
+    background: #2a2a2a;
+    color: white;
+    border: none;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.materia-btn:hover {
+    background: #3b3b3b;
+}
+
+.materia-btn.active {
+    background: #0059ff;
+}
+
+/* ===== Contenido ===== */
+
+.contenido {
+    padding: 20px;
+}
+
+/* ===== Acordeón de Alumno ===== */
+
+.acordeon-alumno {
+    background: #2b2b2b;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #444;
+}
+
+.acordeon-header {
+    padding: 12px;
+    font-size: 18px;
+    background: #1f1f1f;
+    cursor: pointer;
+}
+
+.acordeon-header:hover {
+    background: #333;
+}
+
+.acordeon-body {
+    padding: 15px;
+    background: #242424;
+}
+
+.tabla {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.tabla th, .tabla td {
+    padding: 8px;
+    border: 1px solid #444;
+}

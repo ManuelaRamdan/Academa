@@ -10,12 +10,16 @@ export default function AlumnoInfo({ alumno }) {
 
             <h2 className="seccion-titulo">Materias</h2>
 
-            {alumno.materias.map((mat, index) => {
+            {/* ← Aquí agregamos el fix */}
+            {(!alumno.materias || alumno.materias.length === 0) && (
+                <p>Este alumno no tiene materias cargadas.</p>
+            )}
+
+            {alumno.materias?.map((mat, index) => {
                 const isOpen = abierto === index;
 
                 return (
                     <div key={mat._id} className="materia-item">
-
                         <div
                             className="materia-header"
                             onClick={() => setAbierto(isOpen ? null : index)}
