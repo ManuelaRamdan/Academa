@@ -143,12 +143,22 @@
 .tabla {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    font-size: 15px;
 }
 
-.tabla th, .tabla td {
-    padding: 10px;
-    border-bottom: 1px solid #bbb;
+.tabla thead {
+    background: #00988d;
+    color: white;
+}
+
+.tabla th,
+.tabla td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.tabla tbody tr:hover {
+    background: #f0f7f7;
 }
 
 /* ============================

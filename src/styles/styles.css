@@ -25,6 +25,11 @@ body {
     border: 1px solid var(--color2);
     box-shadow: 0 6px 25px var(--shadow);
     animation: fadeIn 0.4s ease;
+
+    max-width: 100%;
+    overflow-x: auto;
+
+
 }
 
 @keyframes fadeIn {
@@ -109,4 +114,69 @@ button:disabled {
     max-width: 420px;
     margin: 60px auto;
     padding: 20px;
+}
+
+/* ============================
+   HAMBURGUESA (SOLO MOBILE)
+============================ */
+    .hamburger {
+        /* Estado por defecto: OCULTO en escritorio */
+        display: none; 
+        position: fixed;
+        top: 18px;
+        left: 18px;
+        width: 50px;
+        height: 50px;
+        background: var(--color5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.25s ease;
+    }
+
+    .hamburger:hover {
+        background: #43473f;
+    }
+
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 900px) {
+
+    /* mostrar hamburguesa */
+    .hamburger {
+        display: flex;
+    }
+
+    /* la sidebar empieza oculta */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -270px;
+        height: 100%;
+        transition: left 0.35s ease;
+        z-index: 1500;
+    }
+
+    /* cuando se abre */
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* cuando el menú está cerrado, el contenido ocupa todo */
+    .padre-layout {
+        padding-left: 0;
+    }
+
+    /* que el contenido no quede oculto por la sidebar */
+    .content {
+        padding: 30px;
+        margin-top: 60px;
+    }
 }
