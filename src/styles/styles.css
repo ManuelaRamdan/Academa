@@ -110,3 +110,58 @@ button:disabled {
     margin: 60px auto;
     padding: 20px;
 }
+
+/* ============================
+   HAMBURGUESA (SOLO MOBILE)
+============================ */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    font-size: 30px;
+    background: var(--color5);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 900px) {
+
+    /* mostrar hamburguesa */
+    .hamburger {
+        display: block;
+    }
+
+    /* la sidebar empieza oculta */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -270px;
+        height: 100%;
+        transition: left 0.35s ease;
+        z-index: 1500;
+    }
+
+    /* cuando se abre */
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* cuando el menú está cerrado, el contenido ocupa todo */
+    .padre-layout {
+        padding-left: 0;
+    }
+
+    /* que el contenido no quede oculto por la sidebar */
+    .content {
+        padding: 30px;
+        margin-top: 60px;
+    }
+}
