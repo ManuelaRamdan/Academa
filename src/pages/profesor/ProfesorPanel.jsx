@@ -16,6 +16,10 @@ export default function ProfesorPanel() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [filtroMateria, setFiltroMateria] = useState("");
+    const [filtroAlumno, setFiltroAlumno] = useState("");
+
+
     const toggleMenu = () => setMenuAbierto(prev => !prev);
 
     useEffect(() => {
@@ -70,15 +74,30 @@ export default function ProfesorPanel() {
                 <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
                     <h2 className="sidebar-title">Mis materias</h2>
 
-                    {materias.map(m => (
-                        <button
-                            key={m._id}
-                            onClick={() => seleccionarMateria(m)}
-                            className={`sidebar-btn ${materiaSeleccionada?._id === m._id ? "active" : ""}`}
-                        >
-                            {m.nombreMateria} {m.nivel}{m.division} {m.anio}
-                        </button>
-                    ))}
+                    <input
+                        type="text"
+                        className="buscar-materia"
+                        placeholder="Buscar materia..."
+                        value={filtroMateria}
+                        onChange={(e) => setFiltroMateria(e.target.value)}
+                    />
+
+
+                    {materias
+                        .filter(m =>
+                            `${m.nombreMateria} ${m.nivel}${m.division} ${m.anio}`
+                                .toLowerCase()
+                                .includes(filtroMateria.toLowerCase())
+                        )
+                        .map(m => (
+                            <button
+                                key={m._id}
+                                onClick={() => seleccionarMateria(m)}
+                                className={`sidebar-btn ${materiaSeleccionada?._id === m._id ? "active" : ""}`}
+                            >
+                                {m.nombreMateria} {m.nivel}{m.division} {m.anio}
+                            </button>
+                        ))}
 
                     <button onClick={logout} className="logout-btn">Cerrar sesión</button>
                 </aside>
@@ -93,15 +112,26 @@ export default function ProfesorPanel() {
                                 {materiaSeleccionada.nivel}{materiaSeleccionada.division}{" "}
                                 {materiaSeleccionada.anio}
                             </h1>
+                            <input
+                                type="text"
+                                className="buscar-alumno"
+                                placeholder="Buscar alumno..."
+                                value={filtroAlumno}
+                                onChange={(e) => setFiltroAlumno(e.target.value)}
+                            />
 
-                            {alumnos.map(al => (
-                                <AlumnoAcordeon
-                                    key={al._id}
-                                    alumno={al}
-                                    isOpen={openAlumnoId === al._id}
-                                    onToggle={() => toggleAlumno(al._id)}
-                                />
-                            ))}
+                            {alumnos
+                                .filter(al =>
+                                    al.nombre.toLowerCase().includes(filtroAlumno.toLowerCase())
+                                )
+                                .map(al => (
+                                    <AlumnoAcordeon
+                                        key={al._id}
+                                        alumno={al}
+                                        isOpen={openAlumnoId === al._id}
+                                        onToggle={() => toggleAlumno(al._id)}
+                                    />
+                                ))}
 
                         </div>
                     ) : (

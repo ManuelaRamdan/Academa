@@ -61,6 +61,7 @@
 .materia-titulo {
     text-align: center;
     margin-bottom: 40px;
+    color: var(--color3);
 }
 
 /* ACCORDION */
@@ -102,4 +103,29 @@
 .tabla td {
     border-bottom: 1px solid #ddd;
     padding: 10px;
+}
+.buscar-materia {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    margin-bottom: 15px;
+    background: #ffffff;
+    color: var(--color5);
+}
+
+
+.buscar-alumno {
+    width: 250px;
+    padding: 10px 12px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--color5);
+    font-size: 15px;
+    margin: 10px 0 20px 0; /* separación hacia abajo */
+    align-self: flex-start;
 }
