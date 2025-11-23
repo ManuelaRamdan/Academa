@@ -1,20 +1,15 @@
-import { useState } from "react";
-
-export default function AlumnoAcordeon({ alumno }) {
-    const [abierto, setAbierto] = useState(false);
-
+export default function AlumnoAcordeon({ alumno, isOpen, onToggle }) {
     return (
         <div className="acordeon-alumno">
-            <div
-                className="acordeon-header"
-                onClick={() => setAbierto(!abierto)}
-            >
-                {alumno.nombre} — {alumno.dni}
+            
+            <div className="acordeon-header" onClick={onToggle}>
+                {alumno.nombre}
             </div>
 
-            {abierto && (
+            {isOpen && (
                 <div className="acordeon-body">
                     <h3>Notas</h3>
+
                     {alumno.notas.length === 0 ? (
                         <p>No tiene notas cargadas</p>
                     ) : (
@@ -37,6 +32,7 @@ export default function AlumnoAcordeon({ alumno }) {
                     )}
 
                     <h3>Asistencias</h3>
+
                     {alumno.asistencias.length === 0 ? (
                         <p>No tiene asistencias cargadas</p>
                     ) : (

@@ -7,23 +7,34 @@ import AlumnoAcordeon from "../../components/AlumnoAcordeon";
 export default function ProfesorPanel() {
     const { user, logout } = useAuth();
 
+    const [profesor, setProfesor] = useState(null);
     const [materias, setMaterias] = useState([]);
     const [materiaSeleccionada, setMateriaSeleccionada] = useState(null);
-    const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+    const [alumnos, setAlumnos] = useState([]);
+    const [openAlumnoId, setOpenAlumnoId] = useState(null);
+    const [menuAbierto, setMenuAbierto] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [menuAbierto, setMenuAbierto] = useState(false);
     const toggleMenu = () => setMenuAbierto(prev => !prev);
 
     useEffect(() => {
         const cargar = async () => {
             try {
-                const res = await getProfesorById(user.profesorId);
-                setMaterias(res.data.materiasDictadas || []);
+                setLoading(true);
 
-                if (res.data.materiasDictadas?.length > 0) {
-                    setMateriaSeleccionada(res.data.materiasDictadas[0]);
+                const res = await getProfesorById(user.profesorId);
+                const data = res.data ?? res;
+
+                setProfesor(data);
+
+                const dictadas = data.materiasDictadas || [];
+                setMaterias(dictadas);
+
+                if (dictadas.length > 0) {
+                    const primera = dictadas[0];
+                    setMateriaSeleccionada(primera);
+                    setAlumnos(primera.alumnos || []);
                 }
 
             } catch (err) {
@@ -36,6 +47,16 @@ export default function ProfesorPanel() {
         if (user?.profesorId) cargar();
     }, [user]);
 
+    const seleccionarMateria = (m) => {
+        setMateriaSeleccionada(m);
+        setAlumnos(m.alumnos || []);
+        setOpenAlumnoId(null);
+    };
+
+    const toggleAlumno = (id) => {
+        setOpenAlumnoId(prev => (prev === id ? null : id));
+    };
+
     if (loading) return <h2 className="loading">Cargando...</h2>;
     if (error) return <p className="error">{error}</p>;
 
@@ -43,53 +64,50 @@ export default function ProfesorPanel() {
         <>
             <button className="hamburger" onClick={toggleMenu}>☰</button>
 
-            <div className="profesor-layout">
+            <div className="prof-layout">
 
-                <aside className={`prof-sidebar ${menuAbierto ? "open" : ""}`}>
-                    <h2 className="prof-sidebar-title">Mis Materias</h2>
+                {/* SIDEBAR */}
+                <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
+                    <h2 className="sidebar-title">Mis materias</h2>
 
-                    {materias.map(mat => (
+                    {materias.map(m => (
                         <button
-                            key={mat._id}
-                            className={`materia-btn ${materiaSeleccionada?._id === mat._id ? "active" : ""}`}
-                            onClick={() => {
-                                setMateriaSeleccionada(mat);
-                                setAlumnoSeleccionado(null);
-                            }}
+                            key={m._id}
+                            onClick={() => seleccionarMateria(m)}
+                            className={`sidebar-btn ${materiaSeleccionada?._id === m._id ? "active" : ""}`}
                         >
-                            {mat.nombreMateria} {mat.nivel}{mat.division} {mat.anio}
+                            {m.nombreMateria} {m.nivel}{m.division} {m.anio}
                         </button>
                     ))}
 
-                    <button onClick={logout} className="prof-logout">Cerrar sesión</button>
+                    <button onClick={logout} className="logout-btn">Cerrar sesión</button>
                 </aside>
 
+                {/* CONTENIDO */}
+                <main className="content">
+                    {materiaSeleccionada ? (
+                        <div className="materia-card">
 
-                <main className="prof-content">
-
-                    {!materiaSeleccionada && <p>Seleccione una materia</p>}
-
-                    {materiaSeleccionada && (
-                        <>
-                            <h1>
-                                {materiaSeleccionada.nombreMateria} {materiaSeleccionada.nivel}
-                                {materiaSeleccionada.division} {materiaSeleccionada.anio}
+                            <h1 className="materia-titulo">
+                                {materiaSeleccionada.nombreMateria}{" "}
+                                {materiaSeleccionada.nivel}{materiaSeleccionada.division}{" "}
+                                {materiaSeleccionada.anio}
                             </h1>
 
-                            <div className="lista-alumnos">
-                                {materiaSeleccionada.alumnos?.map(alumno => (
-                                    <AlumnoAcordeon
-                                        key={alumno._id}
-                                        alumno={alumno}
-                                    />
-                                ))}
-                            </div>
-                        </>
+                            {alumnos.map(al => (
+                                <AlumnoAcordeon
+                                    key={al._id}
+                                    alumno={al}
+                                    isOpen={openAlumnoId === al._id}
+                                    onToggle={() => toggleAlumno(al._id)}
+                                />
+                            ))}
+
+                        </div>
+                    ) : (
+                        <p>No hay materias cargadas.</p>
                     )}
-
                 </main>
-
-
             </div>
         </>
     );
