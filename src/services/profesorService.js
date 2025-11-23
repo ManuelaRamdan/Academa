@@ -1,5 +1,5 @@
 import api from "./api";
 
-export const getProfesorById = async (id) => {
-    return api.get(`/api/profesores/${id}`); 
+export const getProfesorById = async () => {
+    return api.get(`/api/profesores/me`); 
 };

@@ -27,7 +27,7 @@ export default function ProfesorPanel() {
             try {
                 setLoading(true);
 
-                const res = await getProfesorById(user.profesorId);
+                const res = await getProfesorById();
                 const data = res.data ?? res;
 
                 setProfesor(data);
@@ -82,7 +82,7 @@ export default function ProfesorPanel() {
                         onChange={(e) => setFiltroMateria(e.target.value)}
                     />
 
-
+<div className="sidebar-scroll">
                     {materias
                         .filter(m =>
                             `${m.nombreMateria} ${m.nivel}${m.division} ${m.anio}`
@@ -98,7 +98,7 @@ export default function ProfesorPanel() {
                                 {m.nombreMateria} {m.nivel}{m.division} {m.anio}
                             </button>
                         ))}
-
+</div>
                     <button onClick={logout} className="logout-btn">Cerrar sesión</button>
                 </aside>
 
