@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelProfesor.css";
 import AlumnoAcordeon from "../../components/AlumnoAcordeon";
 
+import { actualizarNotas } from "../../services/profesorService"; // asegurate que exista
+
 export default function ProfesorPanel() {
     const { user, logout } = useAuth();
 
@@ -64,6 +66,37 @@ export default function ProfesorPanel() {
     if (loading) return <h2 className="loading">Cargando...</h2>;
     if (error) return <p className="error">{error}</p>;
 
+
+
+    const guardarCambiosAlumno = async (dni, materiaActualizada) => {
+        try {
+            // Convertir nota a número
+            const materiaNormalizada = {
+                ...materiaActualizada,
+                notas: materiaActualizada.notas.map(n => ({
+                    ...n,
+                    nota: n.nota === "" ? null : Number(n.nota)
+                }))
+            };
+
+            console.log("Enviando al backend:", JSON.stringify(materiaNormalizada, null, 2));
+
+            const res = await actualizarNotas(dni, [materiaNormalizada]);
+
+
+            console.log("Guardado OK:", res.data ?? res);
+
+            alert("Cambios guardados correctamente");
+
+        } catch (error) {
+            console.log("ERROR DEL BACKEND:", error.response?.data);
+            alert("Error al guardar");
+        }
+    };
+
+
+
+
     return (
         <>
             <button className="hamburger" onClick={toggleMenu}>☰</button>
@@ -82,23 +115,23 @@ export default function ProfesorPanel() {
                         onChange={(e) => setFiltroMateria(e.target.value)}
                     />
 
-<div className="sidebar-scroll">
-                    {materias
-                        .filter(m =>
-                            `${m.nombreMateria} ${m.nivel}${m.division} ${m.anio}`
-                                .toLowerCase()
-                                .includes(filtroMateria.toLowerCase())
-                        )
-                        .map(m => (
-                            <button
-                                key={m._id}
-                                onClick={() => seleccionarMateria(m)}
-                                className={`sidebar-btn ${materiaSeleccionada?._id === m._id ? "active" : ""}`}
-                            >
-                                {m.nombreMateria} {m.nivel}{m.division} {m.anio}
-                            </button>
-                        ))}
-</div>
+                    <div className="sidebar-scroll">
+                        {materias
+                            .filter(m =>
+                                `${m.nombreMateria} ${m.nivel}${m.division} ${m.anio}`
+                                    .toLowerCase()
+                                    .includes(filtroMateria.toLowerCase())
+                            )
+                            .map(m => (
+                                <button
+                                    key={m._id}
+                                    onClick={() => seleccionarMateria(m)}
+                                    className={`sidebar-btn ${materiaSeleccionada?._id === m._id ? "active" : ""}`}
+                                >
+                                    {m.nombreMateria} {m.nivel}{m.division} {m.anio}
+                                </button>
+                            ))}
+                    </div>
                     <button onClick={logout} className="logout-btn">Cerrar sesión</button>
                 </aside>
 
@@ -124,14 +157,35 @@ export default function ProfesorPanel() {
                                 .filter(al =>
                                     al.nombre.toLowerCase().includes(filtroAlumno.toLowerCase())
                                 )
-                                .map(al => (
-                                    <AlumnoAcordeon
-                                        key={al._id}
-                                        alumno={al}
-                                        isOpen={openAlumnoId === al._id}
-                                        onToggle={() => toggleAlumno(al._id)}
-                                    />
-                                ))}
+                                .map(al => {
+                                    const materiasDelAlumno = [
+                                        {
+                                            idCurso: materiaSeleccionada.idCurso,
+                                            nombreCurso: materiaSeleccionada.nombreMateria,
+                                            division: materiaSeleccionada.division,
+                                            nivel: materiaSeleccionada.nivel,
+                                            anio: materiaSeleccionada.anio,
+                                            notas: al.notas,
+                                            asistencias: al.asistencias
+                                        }
+                                    ];
+
+                                    return (
+                                        <AlumnoAcordeon
+                                            key={al._id}
+                                            alumno={al}
+                                            dni={al.dni}
+                                            materiasDelAlumno={materiasDelAlumno}
+                                            isOpen={openAlumnoId === al._id}
+                                            onToggle={() => toggleAlumno(al._id)}
+                                            onGuardarCambios={(materiaActualizada) =>
+                                                guardarCambiosAlumno(al.dni, materiaActualizada)
+                                            }
+
+                                        />
+                                    );
+                                })
+                            }
 
                         </div>
                     ) : (
