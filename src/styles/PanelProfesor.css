@@ -170,3 +170,93 @@
     border-radius: 12px;
     margin-top: 15px;
 }
+
+/* =======================================
+   ESTILOS GENERALES Y ACCIONES DEL ACORDEÓN
+   ======================================= */
+
+.acordeon-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 15px; /* Aumento ligero del espacio */
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color4); /* Separador suave */
+}
+
+/* --- Botones --- */
+
+/* Botón Guardar (Acento principal --color3) */
+.btn-guardar {
+    background-color: var(--color3); /* Acento fuerte verde */
+    color: var(--color1); /* Texto claro para contraste */
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-guardar:hover {
+    background-color: #1a715a; /* Tono ligeramente más oscuro que --color3 */
+}
+
+/* Botón Cancelar (Color de Peligro adaptado) */
+.btn-cancelar {
+    /* Usamos un color de peligro estándar, o un tono menos dominante */
+    background-color: #D32F2F; /* Rojo clásico de cancelar */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-cancelar:hover {
+    background-color: #B71C1C;
+}
+
+/* =======================================
+   ESTILOS DE NOTIFICACIÓN (Usando la paleta)
+   ======================================= */
+
+.notification-box {
+    padding: 12px 18px;
+    margin: 15px 0;
+    border-radius: 8px; /* Bordes un poco más suaves */
+    font-weight: bold;
+    border: 1px solid transparent;
+    color: var(--color5); /* Texto principal */
+    box-shadow: 0 2px 4px var(--shadow-soft);
+}
+
+/* Error: Se mantiene el rojo por convención, ajustado al tema */
+.notification-error {
+    background-color: #FFEBEE; /* Rojo extremadamente claro */
+    color: #C62828; /* Rojo oscuro */
+    border-color: #FFCDD2;
+}
+
+/* Warning/Advertencia: Usamos un amarillo suave */
+.notification-warning {
+    background-color: #FFFDE7; /* Amarillo muy claro */
+    color: #FBC02D; /* Amarillo mostaza oscuro */
+    border-color: #FFF9C4;
+}
+
+/* Success/Éxito: Usamos los colores de la paleta (color2/color4) */
+.notification-success {
+    background-color: var(--color2); /* Acento suave */
+    color: var(--color5); /* Texto oscuro para contraste */
+    border-color: var(--color4); /* Tono intermedio */
+}
+
+/* Info: Para mensajes como "Cambios descartados" */
+.notification-info {
+    background-color: #E3F2FD; /* Azul claro suave */
+    color: #1565C0; /* Azul oscuro */
+    border-color: #BBDEFB;
+}

@@ -68,31 +68,49 @@ export default function ProfesorPanel() {
 
 
 
-    const guardarCambiosAlumno = async (dni, materiaActualizada) => {
-        try {
-            // Convertir nota a número
-            const materiaNormalizada = {
-                ...materiaActualizada,
-                notas: materiaActualizada.notas.map(n => ({
-                    ...n,
-                    nota: n.nota === "" ? null : Number(n.nota)
-                }))
-            };
+   const guardarCambiosAlumno = async (dni, materiaActualizada) => {
+    try {
+        const materiaNormalizada = {
+            ...materiaActualizada,
+            notas: materiaActualizada.notas.map(n => ({
+                ...n,
+                nota: n.nota === "" ? null : Number(n.nota)
+            }))
+        };
 
-            console.log("Enviando al backend:", JSON.stringify(materiaNormalizada, null, 2));
+        const res = await actualizarNotas(dni, [materiaNormalizada]);
+        const dataGuardada = res.data ?? res;
 
-            const res = await actualizarNotas(dni, [materiaNormalizada]);
+        // === ACTUALIZAR ALUMNOS EN EL ESTADO ===
+        setAlumnos(prev =>
+            prev.map(al => 
+                al.dni === dni
+                    ? { ...al, notas: materiaNormalizada.notas, asistencias: materiaNormalizada.asistencias }
+                    : al
+            )
+        );
 
+        // === ACTUALIZAR MATERIAS DEL PROFESOR ===
+        setMaterias(prevMaterias =>
+            prevMaterias.map(mat => {
+                if (mat._id === materiaSeleccionada._id) {
+                    return {
+                        ...mat,
+                        alumnos: mat.alumnos.map(al =>
+                            al.dni === dni
+                                ? { ...al, notas: materiaNormalizada.notas, asistencias: materiaNormalizada.asistencias }
+                                : al
+                        )
+                    };
+                }
+                return mat;
+            })
+        );
 
-            console.log("Guardado OK:", res.data ?? res);
-
-            alert("Cambios guardados correctamente");
-
-        } catch (error) {
-            console.log("ERROR DEL BACKEND:", error.response?.data);
-            alert("Error al guardar");
-        }
-    };
+    } catch (error) {
+        console.log("ERROR DEL BACKEND:", error.response?.data);
+    }
+};
 
 
 
