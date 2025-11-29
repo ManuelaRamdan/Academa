@@ -1,222 +1,171 @@
+@import "./color.css";
+
+/* ============================
+    LAYOUT PROFESOR (Reutiliza el layout del padre)
+    Nota: En el componente .jsx la clase principal DEBE ser "padre-layout"
+    o "prof-layout" debe ser renombrada a "padre-layout" para funcionar.
+    Asumo que usas las clases comunes ya definidas en PanelPadre.css y Global.css.
+============================ */
+
+/* Si mantienes .prof-layout en el .jsx, debe ser igual a .padre-layout */
 .prof-layout {
     display: flex;
     height: 100vh;
+    background: var(--color1);
 }
 
-/* SIDEBAR */
-.sidebar {
-    width: 260px;
-    background: var(--color5);
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    color: white;
-}
+/* El estilo de .sidebar, .sidebar-title, .sidebar-btn, .sidebar-btn.active, .logout-btn
+   y .content se asume que ya está en PanelPadre.css y Global.css,
+   ¡Pero debemos redefinir el sidebar-scroll del profesor! */
 
 .sidebar-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 10px;
-    color: white;
+    /* Mantener estilo del padre: color5 en background oscuro */
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    color: var(--color1); /* Título del sidebar en color claro */
 }
 
-.sidebar-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;   /* 🔥 separación entre cada materia */
-    background: var(--color4);
-    border: none;
-    border-radius: 10px;
-    text-align: left;
-    color: white;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background 0.2s ease;
+/* Contenedor de scroll para el listado de materias en la sidebar */
+.sidebar-scroll {
+    overflow-y: auto;
+    flex-grow: 1; /* Ocupa el espacio restante */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Separación entre botones, como en el padre */
+    margin-bottom: 15px;
+    padding-right: 5px;
 }
 
-.sidebar-btn:last-child {
-    margin-bottom: 0; /* limpia el último para que no quede espacio extra */
-}
-.sidebar-btn.active {
-    background: var(--color3);
-    color: white;
-}
-
-.logout-btn {
-    margin-top: auto;
-    background: var(--color3);
-    color: #fff;
-    border-radius: 12px;
-}
-
-/* CONTENIDO */
-.content {
-    flex: 1;
-    padding: 50px;
-}
+/* ============================
+    CONTENIDO PRINCIPAL (Equivalente a .alumno-card del padre)
+============================ */
 
 .materia-card {
     background: white;
-    padding: 40px;
-    border-radius: 18px;
-    box-shadow: 0 6px 25px var(--shadow);
-    border: 1px solid var(--color2);
+    padding: 32px;
+    border-radius: 20px;
+    border: 2px solid var(--color2);
+    box-shadow: 0px 6px 20px var(--shadow);
 }
 
-.materia-titulo {
-    text-align: center;
-    margin-bottom: 40px;
+/* Nombre del profesor */
+.profe-nombre {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color5);
+}
+
+.seccion-titulo {
+    margin-top: 25px;
+    font-size: 24px;
     color: var(--color3);
 }
 
-/* ACCORDION */
+
+/* ============================
+    INPUTS DE BÚSQUEDA
+============================ */
+/* .input ya tiene estilo general. Solo ajustamos los márgenes */
+.buscar-materia {
+    /* Input en sidebar, margen inferior más pequeño */
+    margin-bottom: 8px;
+}
+
+.buscar-alumno {
+    /* Input en el contenido principal */
+    margin-bottom: 25px;
+    width: 100%; /* El input debe ocupar el ancho completo */
+}
+
+/* ============================
+    ACORDEÓN ALUMNO (Equivalente a .materia-item del padre)
+============================ */
 .acordeon-alumno {
-    margin-bottom: 20px;
+    /* Estilo igual a .materia-item del padre */
+    background: color-mix(in srgb, var(--color2) 40%, transparent);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 15px;
+    border-left: 5px solid var(--color5);
+    box-shadow: 0px 3px 12px var(--shadow-soft);
+    margin-bottom: 15px; /* Separación entre acordeones de alumnos */
 }
 
 .acordeon-header {
-    background: #92d0b3;
-    padding: 18px;
+    /* Estilo igual a .materia-header del padre */
+    padding: 14px;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--color3) 40%, transparent);
     border-radius: 12px;
     cursor: pointer;
-    font-weight: 600;
     color: var(--color5);
-    transition: 0.2s;
+    transition: 0.25s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .acordeon-header:hover {
-    background: #7fbda1;
+    background: var(--color4);
+    color: white;
 }
 
 .acordeon-body {
-    background: #ffffff;
-    border: 1px solid var(--color2);
+    /* Estilo igual a .materia-body del padre */
+    margin-top: 12px;
+    padding: 14px;
+    background: white;
     border-radius: 12px;
-    padding: 20px;
-    margin-top: 10px;
-    box-shadow: 0 4px 18px var(--shadow-soft);
+    border: 1px solid var(--color3);
 }
 
-/* TABLAS */
+/* ============================
+    ACCIONES Y TABLAS
+============================ */
+
+/* Reutilizamos .tabla del CSS general, solo aseguramos que el margen sea consistente */
 .tabla {
-    width: 100%;
-    margin-bottom: 25px;
-    border-collapse: collapse;
+    margin-bottom: 15px; /* Más consistente con el padding */
 }
 
-.tabla th,
-.tabla td {
-    border-bottom: 1px solid #ddd;
-    padding: 10px;
-}
-.buscar-materia {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    margin-bottom: 15px;
-    background: #ffffff;
-    color: var(--color5);
-}
-
-
-.buscar-alumno {
-    width: 250px;
-    padding: 10px 12px;
-    border: none;
-    outline: none;
-    border-radius: 10px;
-    background: #ffffff;
-    color: var(--color5);
-    font-size: 15px;
-    margin: 10px 0 20px 0; /* separación hacia abajo */
-    align-self: flex-start;
-}
-/* Hacemos que el sidebar sea un contenedor flexible vertical */
-.sidebar {
-    width: 260px;
-    background: var(--color5);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    color: white;
-    height: 100vh;
-}
-
-/* Esta parte es la SCROLLEABLE */
-.sidebar-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 5px; /* Para que no tape la barra de scroll */
-}
-
-/* Le suma estética a la barra */
-.sidebar-scroll::-webkit-scrollbar {
-    width: 8px;
-}
-.sidebar-scroll::-webkit-scrollbar-thumb {
-    background: var(--color3);
-    border-radius: 10px;
-}
-
-/* Botón de logout fijo abajo */
-.logout-btn {
-    background: var(--color3);
-    color: #fff;
-    border-radius: 12px;
-    margin-top: 15px;
-}
-
-/* =======================================
-   ESTILOS GENERALES Y ACCIONES DEL ACORDEÓN
-   ======================================= */
-
+/* Acciones (Guardar/Cancelar) - Mantener los estilos profesionales */
 .acordeon-actions {
     display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
-    gap: 15px; /* Aumento ligero del espacio */
+    justify-content: flex-end;
+    gap: 15px;
     margin-top: 20px;
     padding-top: 10px;
-    border-top: 1px solid var(--color4); /* Separador suave */
+    border-top: 1px solid var(--color3); /* Separador sutil */
 }
 
-/* --- Botones --- */
-
-/* Botón Guardar (Acento principal --color3) */
-.btn-guardar {
-    background-color: var(--color3); /* Acento fuerte verde */
-    color: var(--color1); /* Texto claro para contraste */
+.btn-guardar, .btn-cancelar {
+    /* Aplicamos el estilo general de button, y luego los ajustes */
+    width: auto; /* Para que no ocupe 100% como los botones de formulario */
     padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    font-size: 15px;
+    border-radius: 12px; /* Usar el radio del botón general */
+}
+
+.btn-guardar {
+    background-color: var(--color5); /* Color principal del tema */
+    color: white;
 }
 
 .btn-guardar:hover {
-    background-color: #1a715a; /* Tono ligeramente más oscuro que --color3 */
+    background: #43473f; /* Tono de hover del botón general */
 }
 
-/* Botón Cancelar (Color de Peligro adaptado) */
 .btn-cancelar {
-    /* Usamos un color de peligro estándar, o un tono menos dominante */
-    background-color: #D32F2F; /* Rojo clásico de cancelar */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    background-color: var(--color3); /* Usamos el color de acento del padre */
+    color: var(--color5); /* Texto oscuro para contraste */
 }
 
 .btn-cancelar:hover {
-    background-color: #B71C1C;
+    background: var(--color4); /* Tono de acento más fuerte */
+    color: white;
 }
 
 /* =======================================
@@ -260,3 +209,4 @@
     color: #1565C0; /* Azul oscuro */
     border-color: #BBDEFB;
 }
+

@@ -341,17 +341,12 @@ export default function AlumnoAcordeon({
                         <div key={m.idCurso} className="materia-bloque">
 
                             <div className="materia-titulo">
-                                <h3>{m.nombreMateria ?? "Materia sin nombre"}</h3>
                                 {!editMode && (
                                     <button className="btn-editar" onClick={handleEditar}>
                                         <FaEdit size={20} />
                                     </button>
                                 )}
                             </div>
-
-                            {/* ======================
-                                        NOTAS
-                                ====================== */}
 
                             <h3>Notas</h3>
 
