@@ -59,7 +59,7 @@ export default function AlumnoInfo({ alumno }) {
                                         {mat.asistencias.map(a => (
                                             <tr key={a._id}>
                                                 <td>{new Date(a.fecha).toLocaleDateString()}</td>
-                                                <td>{a.presente ? "✔️" : "❌"}</td>
+                                                <td>{a.presente}</td>
                                             </tr>
                                         ))}
                                     </tbody>

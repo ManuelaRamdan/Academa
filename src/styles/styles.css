@@ -149,34 +149,92 @@ button:disabled {
 ============================ */
 @media (max-width: 900px) {
 
-    /* mostrar hamburguesa */
+    /* 1. Mantenemos el botón hamburguesa visible */
     .hamburger {
         display: flex;
     }
 
-    /* la sidebar empieza oculta */
+    /* 2. Ocultamos la barra lateral por defecto y la ponemos en posición fija. */
     .sidebar {
         position: fixed;
         top: 0;
-        left: -270px;
+        /* ANCHO FIJO: Se mantiene para que el desplazamiento sea predecible */
+        width: 270px; 
+        left: -270px; /* <- Está COMPLETAMENTE fuera de la pantalla */
         height: 100%;
         transition: left 0.35s ease;
         z-index: 1500;
+        /* Necesario para que ocupe toda la altura */
+        height: 100vh; 
     }
 
-    /* cuando se abre */
+    /* 3. Cuando se abre, la movemos a la posición 0 */
     .sidebar.open {
         left: 0;
     }
-
-    /* cuando el menú está cerrado, el contenido ocupa todo */
+    
+    /* 4. El layout principal no debe tener padding lateral fijo. */
     .padre-layout {
-        padding-left: 0;
+        /* Eliminamos el padding lateral forzado cuando el menú está cerrado */
+        padding-left: 0; 
+    }
+    
+    /* 5. El contenido siempre ocupa el 100% (se superpone por el sidebar) */
+    .content {
+        /* Si se ve el desborde, es porque el padding es demasiado grande */
+        padding: 30px;
+        margin-top: 60px; /* Margen para que el contenido no quede debajo del botón hamburguesa */
+        width: 100%;
     }
 
-    /* que el contenido no quede oculto por la sidebar */
-    .content {
-        padding: 30px;
-        margin-top: 60px;
+    /* ************************************************************* */
+    /* *** REGLA CRUCIAL PARA EVITAR SCROLL HORIZONTAL INNECESARIO *** */
+    /* ************************************************************* */
+    /* Es mejor poner esta regla en el CSS Global/Body, pero si no tienes acceso,
+       la forzamos aquí para pantallas pequeñas: */
+    body {
+        overflow-x: hidden;
     }
 }
+
+/* ============================
+   RESPONSIVE PARA PANTALLAS ULTRA PEQUEÑAS (Corrige la rotura a 350px)
+============================ */
+@media (max-width: 420px) {
+    
+    /* 1. Reducir el padding general del contenido */
+    .content {
+        padding: 15px; 
+        margin-top: 60px;
+    }
+
+    /* 2. Reducir el padding interno de las tarjetas */
+    .card, .materia-card {
+        padding: 15px; 
+        border-radius: 12px;
+    }
+    
+    /* 3. Asegurar que la barra lateral no sea más ancha que la pantalla */
+    .sidebar {
+        width: 250px; /* Máximo 250px para dejar espacio en pantallas de 350px */
+    }
+
+    /* 4. Ajustar el tamaño de fuente si es necesario */
+    .alumno-nombre, .profe-nombre {
+        font-size: 24px;
+    }
+    
+    .seccion-titulo, .materia-titulo-color {
+        font-size: 18px;
+    }
+    
+    /* 5. Ajustar el padding de los ítems de acordeón para que quepan */
+    .acordeon-alumno {
+        padding: 6px; 
+    }
+    
+    .acordeon-header {
+        padding: 10px; 
+    }
+}
+

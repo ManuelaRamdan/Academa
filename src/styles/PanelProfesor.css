@@ -63,12 +63,6 @@
     font-size: 24px;
     color: var(--color3);
 }
-
-
-/* ============================
-    INPUTS DE BÚSQUEDA
-============================ */
-/* .input ya tiene estilo general. Solo ajustamos los márgenes */
 .buscar-materia {
     /* Input en sidebar, margen inferior más pequeño */
     margin-bottom: 8px;
@@ -210,3 +204,130 @@
     border-color: #BBDEFB;
 }
 
+/* ============================
+   RESPONSIVE (Ajuste para Mobile/Tablet)
+============================ */
+@media (max-width: 900px) {
+
+    /* El botón hamburguesa se muestra */
+    .hamburger {
+        display: flex;
+    }
+
+    /* La sidebar se oculta por defecto y se convierte en un menú superpuesto */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        width: 270px; 
+        left: -270px; /* Completamente fuera de la pantalla */
+        height: 100vh; /* Ocupa toda la altura de la vista */
+        transition: left 0.35s ease;
+        z-index: 1500;
+    }
+
+    /* Cuando se abre, se desliza hacia adentro */
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* El layout principal debe reajustar el padding lateral en móvil */
+    .padre-layout {
+        padding-left: 0; 
+    }
+
+    /* El contenido principal ajusta el padding y se mueve debajo del botón hamburguesa */
+    .content {
+        padding: 30px;
+        margin-top: 60px;
+        width: 100%;
+    }
+    
+    /* Regla crucial para evitar el scroll horizontal cuando el sidebar está cerrado 
+       y prevenir el desbordamiento de las tablas. */
+    body {
+        overflow-x: hidden;
+    }
+}
+
+
+/* ============================
+   AJUSTES FINOS PARA PANTALLAS ULTRA ESTRECHAS (<= 420px)
+   Esto soluciona la rotura en dispositivos como 350px.
+============================ */
+@media (max-width: 420px) {
+    
+    /* 1. Reducir padding general de la tarjeta y el contenido */
+    .content {
+        padding: 15px; /* Más estrecho */
+    }
+
+    .materia-card {
+        padding: 15px; /* Padding interno de la tarjeta reducido */
+    }
+    
+    /* 2. Reducir padding interno del cuerpo del acordeón (donde están las tablas) */
+    .acordeon-body {
+        padding: 10px; 
+    }
+
+    /* 3. Ajustar el tamaño de fuente para títulos grandes */
+    .profe-nombre {
+        font-size: 26px;
+    }
+    
+    .seccion-titulo {
+        font-size: 20px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    
+    /* 4. Inputs y Selects dentro del acordeón (para liberar espacio en la tabla) */
+    .acordeon-body input, 
+    .acordeon-body select {
+        padding: 8px 10px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        height: 38px; /* Altura más manejable */
+    }
+
+    /* 5. SOLUCIÓN AL DESBORDAMIENTO DE TABLAS: Scroll horizontal solo para la tabla */
+    
+    /* Envolvemos la tabla en un contenedor con scroll. 
+       Necesitas envolver cada <table> con un <div> en el JSX: <div class="tabla-responsive-wrapper"><table class="tabla">...</table></div> */
+    .tabla-responsive-wrapper {
+        overflow-x: auto; /* Permite el scroll horizontal SÓLO en este contenedor */
+        margin: 10px 0;
+    }
+    
+    /* Aseguramos que la tabla dentro del wrapper no intente reducir su contenido */
+    .tabla {
+        /* Fuerza a la tabla a mantener un ancho mínimo para que el scroll funcione */
+        min-width: 450px; 
+        margin-bottom: 10px;
+    }
+    
+    /* Ajustes finos a las celdas de la tabla */
+    .tabla th,
+    .tabla td {
+        padding: 8px 5px; /* Reducir el padding de las celdas */
+        font-size: 14px;
+    }
+    
+    /* Ajustamos el tamaño del botón de la tabla (ej. el ícono de eliminar) */
+    .tabla td button {
+        padding: 8px; /* Botón más pequeño */
+        border-radius: 8px;
+        width: 38px; /* Ancho fijo para el botón de eliminar */
+        height: 38px;
+    }
+    
+    /* 6. Ajustar los botones de acción (Guardar/Cancelar) */
+    .acordeon-actions {
+        gap: 10px;
+    }
+    .btn-guardar, .btn-cancelar {
+        padding: 8px 15px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+}

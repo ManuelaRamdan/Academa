@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrashAlt, FaTimes } from "react-icons/fa"; // Importar FaTrashAlt y FaTimes
 
+const ASISTENCIA_ENUM = {
+    PRESENTE: 'P', // O 'Presente' si quieres el nombre completo en la BD
+    AUSENTE: 'A', // O 'Ausente'
+    FERIADO: 'F', // O 'Feriado'
+    PARO: 'X', // O 'Paro'
+};
+
 export default function AlumnoAcordeon({
     alumno,
     dni,
@@ -135,7 +142,7 @@ export default function AlumnoAcordeon({
                             {
                                 _id: crypto.randomUUID(),
                                 fecha: new Date().toISOString(),
-                                presente: true
+                                presente: ASISTENCIA_ENUM.PRESENTE
                             }
                         ]
                     }
@@ -296,6 +303,21 @@ export default function AlumnoAcordeon({
             case 'success': return 'notification-success';
             case 'info': return 'notification-info';
             default: return '';
+        }
+    };
+
+const getAsistenciaDisplay = (value) => {
+        switch (value) {
+            case ASISTENCIA_ENUM.PRESENTE:
+                return 'Presente'; // Modificado
+            case ASISTENCIA_ENUM.AUSENTE:
+                return 'Ausente'; // Modificado
+            case ASISTENCIA_ENUM.FERIADO:
+                return 'Feriado'; // Modificado
+            case ASISTENCIA_ENUM.PARO:
+                return 'Paro'; // Modificado
+            default:
+                return value;
         }
     };
 
@@ -489,20 +511,23 @@ export default function AlumnoAcordeon({
                                                 <td>
                                                     {editMode ? (
                                                         <select
-                                                            value={a.presente ? "1" : "0"}
+                                                            // 3. ACTUALIZAR EL SELECT PARA USAR LOS VALORES DEL ENUM
+                                                            value={a.presente}
                                                             onChange={(e) =>
                                                                 handleCambioAsistencia(
                                                                     m.idCurso,
                                                                     index,
-                                                                    e.target.value === "1"
+                                                                    e.target.value
                                                                 )
                                                             }
                                                         >
-                                                            <option value="1">Presente</option>
-                                                            <option value="0">Ausente</option>
+                                                            <option value={ASISTENCIA_ENUM.PRESENTE}>Presente</option>
+                                                            <option value={ASISTENCIA_ENUM.AUSENTE}>Ausente</option>
+                                                            <option value={ASISTENCIA_ENUM.FERIADO}>Feriado</option>
+                                                            <option value={ASISTENCIA_ENUM.PARO}>Paro</option>
                                                         </select>
                                                     ) : (
-                                                        a.presente ? "✔️" : "❌"
+                                                        getAsistenciaDisplay(a.presente)
                                                     )}
                                                 </td>
                                                 {editMode && (
