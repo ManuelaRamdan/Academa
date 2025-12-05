@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // ⚠️ Importar useRef
 import { FaEdit, FaTrashAlt, FaTimes } from "react-icons/fa"; // Importar FaTrashAlt y FaTimes
 
 const ASISTENCIA_ENUM = {
@@ -11,7 +11,6 @@ const ASISTENCIA_ENUM = {
 const getDayKey = (isoDate) => {
     if (!isoDate) return '';
     // Usamos split('T')[0] en la fecha ISO para obtener solo la parte YYYY-MM-DD.
-    // Esto funciona porque el backend almacena UTC, y al añadir se usa toISOString().
     return isoDate.split('T')[0];
 };
 
@@ -50,7 +49,9 @@ export default function AlumnoAcordeon({
     onToggle,
     onGuardarCambios,
 }) {
-
+    // === SCROLL ADD ===
+    const notificationRef = useRef(null);
+    const modalRef = useRef(null);
 
     const [editMode, setEditMode] = useState(false);
     // Usamos el estado para los datos editables
@@ -65,6 +66,20 @@ export default function AlumnoAcordeon({
         index: null,
         itemName: '', // Nombre del ítem para mostrar en el modal
     });
+
+    // Cuando aparece un mensaje → hace scroll hasta el mensaje
+    useEffect(() => {
+        if (notificationMessage.message && notificationRef.current) {
+            notificationRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, [notificationMessage]);
+
+    // Cuando aparece el modal de borrar → scroll al modal (usamos useEffect en lugar de setTimeout)
+    useEffect(() => {
+        if (confirmDelete.isActive && modalRef.current) {
+            modalRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [confirmDelete.isActive]);
 
 
     // Sincronizar el estado de 'materias' con 'materiasDelAlumno'
@@ -102,6 +117,7 @@ export default function AlumnoAcordeon({
                 nuevoValor = "";
             } else if (isNaN(numValor)) {
                 setNotificationMessage({ type: 'error', message: 'La nota debe ser un número válido.' });
+                // ⚠️ Scroll a la notificación
                 return;
             } else if (numValor < 1) {
                 setNotificationMessage({ type: 'error', message: '❌ Error: La nota mínima permitida es 1.' });
@@ -183,6 +199,7 @@ export default function AlumnoAcordeon({
                             type: 'error',
                             message: `❌ Error: Ya existe una asistencia registrada para el día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]}.`
                         });
+                        // ⚠️ Scroll a la notificación
                         return m; // Devuelve la materia sin cambios
                     }
 
@@ -220,6 +237,7 @@ export default function AlumnoAcordeon({
             itemName,
         });
         setNotificationMessage({ type: '', message: '' });
+        // No necesitamos scroll aquí porque el useEffect de confirmDelete lo maneja.
     };
 
     // Función que ejecuta la eliminación después de la confirmación
@@ -246,6 +264,7 @@ export default function AlumnoAcordeon({
         // Limpiar confirmación después de eliminar
         setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' });
         setNotificationMessage({ type: 'info', message: '🗑️ Elemento eliminado. Pulse Guardar para aplicar el cambio.' });
+        // ⚠️ Scroll a la notificación
     };
 
 
@@ -264,6 +283,7 @@ export default function AlumnoAcordeon({
                 type: 'error',
                 message: '❌ Error: No puedes registrar asistencias en el futuro.'
             });
+            // ⚠️ Scroll a la notificación
             return;
         }
 
@@ -273,8 +293,6 @@ export default function AlumnoAcordeon({
         // 2. VALIDACIÓN DE UNICIDAD AL MODIFICAR
         let esValido = true;
         
-        // La validación se hace de forma reactiva al intentar actualizar el estado
-        // Mapeamos el estado actual para hacer la comprobación de unicidad
         setMaterias(prev =>
             prev.map(materia => {
                 if (materia.idCurso === idCurso) {
@@ -291,6 +309,7 @@ export default function AlumnoAcordeon({
                             type: 'error',
                             message: `❌ Error: El día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]} ya está registrado en otra asistencia.`
                         });
+                        // ⚠️ Scroll a la notificación
                         esValido = false; // Marca como inválido
                         return materia; // Devuelve la materia sin cambios
                     }
@@ -382,6 +401,7 @@ export default function AlumnoAcordeon({
                 type: 'error',
                 message: '❌ Error: El campo "Tipo" de una o más notas está vacío.'
             });
+            // ⚠️ Scroll a la notificación
             return;
         }
 
@@ -391,6 +411,7 @@ export default function AlumnoAcordeon({
                 type: 'error',
                 message: '❌ Error: No se puede guardar ya existe una asistencia con esa fecha.'
             });
+            // ⚠️ Scroll a la notificación
             return;
         }
         // ----------------------------------------------------------------------
@@ -411,7 +432,8 @@ export default function AlumnoAcordeon({
         setEditMode(false);
         setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' });
 
-        // onGuardarCambios ya maneja la normalización a null para notas vacías
+        // ⚠️ Scroll a la notificación (éxito o advertencia)
+        
         onGuardarCambios(materiasAEnviar[0]);
     };
 
@@ -443,11 +465,12 @@ export default function AlumnoAcordeon({
 
     return (
         <div className="acordeon-alumno">
+            
             {/* MODAL DE CONFIRMACIÓN */}
             {confirmDelete.isActive && (
                 <div className="modal-confirmacion-overlay">
-                    <div className="modal-confirmacion-box">
-                        <p>¿Estás seguro que deseas eliminar {confirmDelete.itemType === 'nota' ? `la nota: ${confirmDelete.itemName}` : `la asistencia del ${new Date(confirmDelete.itemName).toLocaleDateString()}`}?</p>
+                    <div className="modal-confirmacion-box" ref={modalRef}> {/* ⚠️ REFERENCIA AÑADIDA AQUÍ */}
+                        <p>¿Estás seguro que deseas eliminar {confirmDelete.itemType === 'nota' ? `la nota: ${confirmDelete.itemName}` : `la asistencia del ${getFixedDateDisplay(confirmDelete.itemName)}`}?</p>
                         <div className="modal-actions">
                             <button className="btn-cancelar" onClick={() => setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' })}>
                                 Cancelar
@@ -469,12 +492,14 @@ export default function AlumnoAcordeon({
             {isOpen && (
                 <div className="acordeon-body">
 
-                    {/* MENSAJE DE NOTIFICACIÓN */}
-                    {notificationMessage.message && (
-                        <div className={`notification-box ${getNotificationClass()}`}>
-                            {notificationMessage.message}
-                        </div>
-                    )}
+                    {/* MENSAJE DE NOTIFICACIÓN - Referencia agregada */}
+                    <div ref={notificationRef}> {/* ⚠️ REFERENCIA AÑADIDA AQUÍ */}
+                        {notificationMessage.message && (
+                            <div className={`notification-box ${getNotificationClass()}`}>
+                                {notificationMessage.message}
+                            </div>
+                        )}
+                    </div>
                     {/* FIN MENSAJE DE NOTIFICACIÓN */}
 
 
