@@ -3,6 +3,20 @@ import { useState } from "react";
 export default function AlumnoInfo({ alumno }) {
     const [abierto, setAbierto] = useState(null);
 
+    const getFixedDateDisplay = (isoDate) => {
+        if (!isoDate) return '';
+        
+        const date = new Date(isoDate);
+
+        // Forzar la extracción de los componentes de la fecha usando UTC
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1; // getUTCMonth es base 0
+        const day = date.getUTCDate();
+        
+        // Formatear a DD/MM/YYYY con relleno para un solo dígito
+        return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+    };
+
     return (
         <div className="alumno-card">
             <h1 className="alumno-nombre">{alumno.nombre}</h1>
@@ -10,7 +24,6 @@ export default function AlumnoInfo({ alumno }) {
 
             <h2 className="seccion-titulo">Materias</h2>
 
-            {/* ← Aquí agregamos el fix */}
             {(!alumno.materias || alumno.materias.length === 0) && (
                 <p>Este alumno no tiene materias cargadas.</p>
             )}
@@ -58,7 +71,7 @@ export default function AlumnoInfo({ alumno }) {
                                     <tbody>
                                         {mat.asistencias.map(a => (
                                             <tr key={a._id}>
-                                                <td>{new Date(a.fecha).toLocaleDateString()}</td>
+                                                <td>{getFixedDateDisplay(a.fecha)}</td>
                                                 <td>{a.presente}</td>
                                             </tr>
                                         ))}

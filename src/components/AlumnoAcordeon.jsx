@@ -8,6 +8,40 @@ const ASISTENCIA_ENUM = {
     PARO: 'X', // O 'Paro'
 };
 
+const getDayKey = (isoDate) => {
+    if (!isoDate) return '';
+    // Usamos split('T')[0] en la fecha ISO para obtener solo la parte YYYY-MM-DD.
+    // Esto funciona porque el backend almacena UTC, y al añadir se usa toISOString().
+    return isoDate.split('T')[0];
+};
+
+const getFixedDateDisplay = (isoDate) => {
+    if (!isoDate) return '';
+    
+    const date = new Date(isoDate);
+
+    // FECHA: Usa UTC (Correcto para el día)
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1; 
+    const day = date.getUTCDate();
+    const datePart = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+    // HORA: Usa LOCAL (getters sin UTC, que aplican la zona horaria)
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const timePart = `${hours}:${minutes}`;
+
+    return `${datePart} ${timePart}`; 
+};
+
+const getDatetimeLocalValue = (isoDate) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    const offset = date.getTimezoneOffset() * 60000;
+    const dateLocal = new Date(date.getTime() - offset);
+    return dateLocal.toISOString().slice(0, 16);
+};
+
 export default function AlumnoAcordeon({
     alumno,
     dni,
@@ -16,6 +50,7 @@ export default function AlumnoAcordeon({
     onToggle,
     onGuardarCambios,
 }) {
+
 
     const [editMode, setEditMode] = useState(false);
     // Usamos el estado para los datos editables
@@ -116,7 +151,7 @@ export default function AlumnoAcordeon({
         const nuevaNota = {
             _id: crypto.randomUUID(), // Añadido para la key de React
             tipo: "",
-            nota: 1, 
+            nota: 1,
         };
 
         setMaterias(prev =>
@@ -132,29 +167,49 @@ export default function AlumnoAcordeon({
     };
 
     const handleAgregarAsistencia = (idCurso) => {
+        
+        const nuevaFechaISO = new Date().toISOString();
+        const nuevoDiaClave = getDayKey(nuevaFechaISO); // Clave: YYYY-MM-DD
+        
         setMaterias(prev =>
-            prev.map(m =>
-                m.idCurso === idCurso
-                    ? {
+            prev.map(m => {
+                if (m.idCurso === idCurso) {
+                    
+                    // 1. VALIDACIÓN DE UNICIDAD AL AGREGAR
+                    const yaExiste = m.asistencias.some(a => getDayKey(a.fecha) === nuevoDiaClave);
+
+                    if (yaExiste) {
+                        setNotificationMessage({
+                            type: 'error',
+                            message: `❌ Error: Ya existe una asistencia registrada para el día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]}.`
+                        });
+                        return m; // Devuelve la materia sin cambios
+                    }
+
+                    // Si no existe, agregamos la nueva asistencia
+                    setNotificationMessage({ type: '', message: '' });
+
+                    return {
                         ...m,
                         asistencias: [
                             ...m.asistencias,
                             {
                                 _id: crypto.randomUUID(),
-                                fecha: new Date().toISOString(),
+                                fecha: nuevaFechaISO,
                                 presente: ASISTENCIA_ENUM.PRESENTE
                             }
                         ]
-                    }
-                    : m
-            )
+                    };
+                }
+                return m;
+            })
         );
     };
 
     /* ==========================
         ELIMINAR NOTA / ASISTENCIA
     ========================== */
-    
+
     // Función que inicia el cuadro de confirmación
     const iniciarEliminacion = (idCurso, itemType, index, itemName) => {
         setConfirmDelete({
@@ -171,7 +226,7 @@ export default function AlumnoAcordeon({
     const ejecutarEliminacion = () => {
         const { idCurso, itemType, index } = confirmDelete;
 
-        setMaterias(prev => 
+        setMaterias(prev =>
             prev.map(m => {
                 if (m.idCurso === idCurso) {
                     if (itemType === 'nota') {
@@ -198,20 +253,58 @@ export default function AlumnoAcordeon({
         VALIDACIÓN DE FECHA DE ASISTENCIA
     ========================== */
 
-    const handleCambioFechaAsistencia = (idCurso, index, nuevaFecha) => {
-        const fechaSeleccionada = new Date(nuevaFecha);
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        fechaSeleccionada.setHours(0, 0, 0, 0);
+    const handleCambioFechaHoraAsistencia = (idCurso, index, nuevaFechaHoraString) => {
 
-        if (fechaSeleccionada > hoy) {
+        // 1. VALIDACIÓN DE FUTURO
+        const fechaSeleccionada = new Date(nuevaFechaHoraString);
+        const hoy = new Date();
+
+        if (fechaSeleccionada.getTime() > hoy.getTime()) {
             setNotificationMessage({
                 type: 'error',
-                message: '❌ Error: No puedes registrar asistencias en fechas futuras.'
+                message: '❌ Error: No puedes registrar asistencias en el futuro.'
             });
             return;
         }
 
+        const nuevaFechaISO = fechaSeleccionada.toISOString();
+        const nuevoDiaClave = getDayKey(nuevaFechaISO);
+
+        // 2. VALIDACIÓN DE UNICIDAD AL MODIFICAR
+        let esValido = true;
+        
+        // La validación se hace de forma reactiva al intentar actualizar el estado
+        // Mapeamos el estado actual para hacer la comprobación de unicidad
+        setMaterias(prev =>
+            prev.map(materia => {
+                if (materia.idCurso === idCurso) {
+                    
+                    const asistenciaEncontrada = materia.asistencias.find((a, i) => 
+                        // Compara si el DÍA de la nueva fecha coincide con el DÍA de otra asistencia
+                        getDayKey(a.fecha) === nuevoDiaClave && 
+                        // Y se asegura de que NO sea el mismo elemento que estamos editando
+                        i !== index
+                    );
+
+                    if (asistenciaEncontrada) {
+                        setNotificationMessage({
+                            type: 'error',
+                            message: `❌ Error: El día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]} ya está registrado en otra asistencia.`
+                        });
+                        esValido = false; // Marca como inválido
+                        return materia; // Devuelve la materia sin cambios
+                    }
+                }
+                return materia;
+            })
+        );
+        
+        if (!esValido) {
+            return; // Si la validación falló, salimos sin aplicar el cambio
+        }
+
+
+        // 3. APLICAR CAMBIO si es válido
         setNotificationMessage({ type: '', message: '' });
 
         setMaterias(prev =>
@@ -220,14 +313,14 @@ export default function AlumnoAcordeon({
                     ? {
                         ...m,
                         asistencias: m.asistencias.map((a, i) =>
-                            i === index ? { ...a, fecha: nuevaFecha } : a
+                            i === index ? { ...a, fecha: nuevaFechaISO } : a
                         )
                     }
                     : m
             )
         );
     };
-
+    
     /* ==========================
         GUARDAR CAMBIOS
     ========================== */
@@ -235,6 +328,7 @@ export default function AlumnoAcordeon({
         const materiasAEnviar = JSON.parse(JSON.stringify(materias));
         let tipoVacioEncontrado = false;
         let hayErrorRango = false;
+        let hayErrorAsistenciaDuplicada = false; // <-- Nuevo flag para duplicados de asistencia
 
         materiasAEnviar.forEach(materia => {
             materia.notas = materia.notas.map(nota => {
@@ -266,6 +360,21 @@ export default function AlumnoAcordeon({
                 }
                 return asistencia;
             });
+
+            // >>> INICIO DE LA NUEVA VALIDACIÓN DE ASISTENCIA DUPLICADA AL GUARDAR <<<
+            const diasRegistrados = new Set();
+            materia.asistencias.forEach(asistencia => {
+                if (hayErrorAsistenciaDuplicada) return; // Si ya encontramos un error, no seguir
+                
+                // Usamos getDayKey para comparar solo la fecha (YYYY-MM-DD)
+                const diaClave = getDayKey(asistencia.fecha);
+
+                if (diasRegistrados.has(diaClave)) {
+                    hayErrorAsistenciaDuplicada = true;
+                }
+                diasRegistrados.add(diaClave);
+            });
+            // >>> FIN DE LA NUEVA VALIDACIÓN <<<
         });
 
         if (tipoVacioEncontrado) {
@@ -275,6 +384,17 @@ export default function AlumnoAcordeon({
             });
             return;
         }
+
+        // >>> MANEJO DEL NUEVO ERROR DE ASISTENCIA DUPLICADA <<<
+        if (hayErrorAsistenciaDuplicada) {
+            setNotificationMessage({
+                type: 'error',
+                message: '❌ Error: No se puede guardar ya existe una asistencia con esa fecha.'
+            });
+            return;
+        }
+        // ----------------------------------------------------------------------
+
 
         if (hayErrorRango) {
             setNotificationMessage({
@@ -306,7 +426,7 @@ export default function AlumnoAcordeon({
         }
     };
 
-const getAsistenciaDisplay = (value) => {
+    const getAsistenciaDisplay = (value) => {
         switch (value) {
             case ASISTENCIA_ENUM.PRESENTE:
                 return 'Presente'; // Modificado
@@ -320,7 +440,6 @@ const getAsistenciaDisplay = (value) => {
                 return value;
         }
     };
-
 
     return (
         <div className="acordeon-alumno">
@@ -437,9 +556,9 @@ const getAsistenciaDisplay = (value) => {
                                                         <button
                                                             className="btn-eliminar"
                                                             onClick={() => iniciarEliminacion(
-                                                                m.idCurso, 
-                                                                'nota', 
-                                                                index, 
+                                                                m.idCurso,
+                                                                'nota',
+                                                                index,
                                                                 n.tipo || 'Nueva Nota'
                                                             )}
                                                         >
@@ -456,8 +575,8 @@ const getAsistenciaDisplay = (value) => {
                             )}
 
                             {/* ======================
-                                    ASISTENCIAS
-                                ====================== */}
+                                        ASISTENCIAS
+                                    ====================== */}
 
                             <h3>Asistencias</h3>
 
@@ -487,23 +606,19 @@ const getAsistenciaDisplay = (value) => {
                                                 <td>
                                                     {editMode ? (
                                                         <input
-                                                            type="date"
-                                                            max={new Date().toISOString().split("T")[0]}
-                                                            value={
-                                                                new Date(a.fecha)
-                                                                    .toISOString()
-                                                                    .split("T")[0]
-                                                            }
+                                                            type="datetime-local" // ⚠️ CAMBIO A datetime-local
+                                                            max={getDatetimeLocalValue(new Date().toISOString())}
+                                                            value={getDatetimeLocalValue(a.fecha)} // ⚠️ Uso del helper
                                                             onChange={(e) =>
-                                                                handleCambioFechaAsistencia(
+                                                                handleCambioFechaHoraAsistencia( // ⚠️ Cambio de función
                                                                     m.idCurso,
                                                                     index,
-                                                                    new Date(e.target.value).toISOString()
+                                                                    e.target.value
                                                                 )
                                                             }
                                                         />
                                                     ) : (
-                                                        new Date(a.fecha).toLocaleDateString()
+                                                        getFixedDateDisplay(a.fecha) // Uso de helper para mostrar fecha y hora
                                                     )}
                                                 </td>
 
@@ -535,9 +650,9 @@ const getAsistenciaDisplay = (value) => {
                                                         <button
                                                             className="btn-eliminar"
                                                             onClick={() => iniciarEliminacion(
-                                                                m.idCurso, 
-                                                                'asistencia', 
-                                                                index, 
+                                                                m.idCurso,
+                                                                'asistencia',
+                                                                index,
                                                                 a.fecha
                                                             )}
                                                         >
