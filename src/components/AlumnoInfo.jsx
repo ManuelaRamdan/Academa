@@ -6,12 +6,12 @@ export default function AlumnoInfo({ alumno }) {
 
     const getFixedDateDisplay = (isoDate) => {
         if (!isoDate) return '';
-        
+
         const date = new Date(isoDate);
         const year = date.getUTCFullYear();
         const month = date.getUTCMonth() + 1;
         const day = date.getUTCDate();
-        
+
         return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
     };
 
@@ -58,40 +58,43 @@ export default function AlumnoInfo({ alumno }) {
                         {isOpen && (
                             <div className="materia-body">
                                 <h3>Notas</h3>
-                                <table className="tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Nota</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {mat.notas.map(n => (
-                                            <tr key={n._id}>
-                                                <td>{n.tipo}</td>
-                                                <td>{n.nota}</td>
+                                <div className="tabla-wrapper">
+                                    <table className="tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Nota</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
+                                        </thead>
+                                        <tbody>
+                                            {mat.notas.map(n => (
+                                                <tr key={n._id}>
+                                                    <td>{n.tipo}</td>
+                                                    <td>{n.nota}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <h3>Asistencias</h3>
-                                <table className="tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Presente</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {mat.asistencias.map(a => (
-                                            <tr key={a._id}>
-                                                <td>{getFixedDateDisplay(a.fecha)}</td>
-                                                <td>{a.presente}</td>
+                                <div className="tabla-wrapper">
+                                    <table className="tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Presente</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {mat.asistencias.map(a => (
+                                                <tr key={a._id}>
+                                                    <td>{getFixedDateDisplay(a.fecha)}</td>
+                                                    <td>{a.presente}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         )}
                     </div>

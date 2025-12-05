@@ -16,12 +16,12 @@ const getDayKey = (isoDate) => {
 
 const getFixedDateDisplay = (isoDate) => {
     if (!isoDate) return '';
-    
+
     const date = new Date(isoDate);
 
     // FECHA: Usa UTC (Correcto para el día)
     const year = date.getUTCFullYear();
-    const month = date.getUTCMonth() + 1; 
+    const month = date.getUTCMonth() + 1;
     const day = date.getUTCDate();
     const datePart = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
 
@@ -30,7 +30,7 @@ const getFixedDateDisplay = (isoDate) => {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const timePart = `${hours}:${minutes}`;
 
-    return `${datePart} ${timePart}`; 
+    return `${datePart} ${timePart}`;
 };
 
 const getDatetimeLocalValue = (isoDate) => {
@@ -183,14 +183,14 @@ export default function AlumnoAcordeon({
     };
 
     const handleAgregarAsistencia = (idCurso) => {
-        
+
         const nuevaFechaISO = new Date().toISOString();
         const nuevoDiaClave = getDayKey(nuevaFechaISO); // Clave: YYYY-MM-DD
-        
+
         setMaterias(prev =>
             prev.map(m => {
                 if (m.idCurso === idCurso) {
-                    
+
                     // 1. VALIDACIÓN DE UNICIDAD AL AGREGAR
                     const yaExiste = m.asistencias.some(a => getDayKey(a.fecha) === nuevoDiaClave);
 
@@ -292,14 +292,14 @@ export default function AlumnoAcordeon({
 
         // 2. VALIDACIÓN DE UNICIDAD AL MODIFICAR
         let esValido = true;
-        
+
         setMaterias(prev =>
             prev.map(materia => {
                 if (materia.idCurso === idCurso) {
-                    
-                    const asistenciaEncontrada = materia.asistencias.find((a, i) => 
+
+                    const asistenciaEncontrada = materia.asistencias.find((a, i) =>
                         // Compara si el DÍA de la nueva fecha coincide con el DÍA de otra asistencia
-                        getDayKey(a.fecha) === nuevoDiaClave && 
+                        getDayKey(a.fecha) === nuevoDiaClave &&
                         // Y se asegura de que NO sea el mismo elemento que estamos editando
                         i !== index
                     );
@@ -317,7 +317,7 @@ export default function AlumnoAcordeon({
                 return materia;
             })
         );
-        
+
         if (!esValido) {
             return; // Si la validación falló, salimos sin aplicar el cambio
         }
@@ -339,7 +339,7 @@ export default function AlumnoAcordeon({
             )
         );
     };
-    
+
     /* ==========================
         GUARDAR CAMBIOS
     ========================== */
@@ -384,7 +384,7 @@ export default function AlumnoAcordeon({
             const diasRegistrados = new Set();
             materia.asistencias.forEach(asistencia => {
                 if (hayErrorAsistenciaDuplicada) return; // Si ya encontramos un error, no seguir
-                
+
                 // Usamos getDayKey para comparar solo la fecha (YYYY-MM-DD)
                 const diaClave = getDayKey(asistencia.fecha);
 
@@ -433,7 +433,7 @@ export default function AlumnoAcordeon({
         setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' });
 
         // ⚠️ Scroll a la notificación (éxito o advertencia)
-        
+
         onGuardarCambios(materiasAEnviar[0]);
     };
 
@@ -465,19 +465,22 @@ export default function AlumnoAcordeon({
 
     return (
         <div className="acordeon-alumno">
-            
+
             {/* MODAL DE CONFIRMACIÓN */}
             {confirmDelete.isActive && (
                 <div className="modal-confirmacion-overlay">
                     <div className="modal-confirmacion-box" ref={modalRef}> {/* ⚠️ REFERENCIA AÑADIDA AQUÍ */}
                         <p>¿Estás seguro que deseas eliminar {confirmDelete.itemType === 'nota' ? `la nota: ${confirmDelete.itemName}` : `la asistencia del ${getFixedDateDisplay(confirmDelete.itemName)}`}?</p>
                         <div className="modal-actions">
-                            <button className="btn-cancelar" onClick={() => setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' })}>
-                                Cancelar
-                            </button>
-                            <button className="btn-eliminar-confirmar" onClick={ejecutarEliminacion}>
-                                Sí, Eliminar
-                            </button>
+                            <div className="botones-acciones">
+                                <button className="btn-cancelar" onClick={() => setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' })}>
+                                    Cancelar
+                                </button>
+                                <button className="btn-eliminar-confirmar" onClick={ejecutarEliminacion}>
+                                    Sí, Eliminar
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -526,75 +529,77 @@ export default function AlumnoAcordeon({
                             )}
 
                             {m.notas?.length > 0 ? (
-                                <table className="tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Nota</th>
-                                            {editMode && <th className="th-accion"></th>}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {m.notas.map((n, index) => (
-                                            <tr key={n._id || index}>
-                                                <td>
-                                                    {editMode ? (
-                                                        <input
-                                                            value={n.tipo}
-                                                            placeholder="Tipo (Obligatorio)"
-                                                            onChange={(e) =>
-                                                                handleCambioNota(
-                                                                    m.idCurso,
-                                                                    index,
-                                                                    "tipo",
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        n.tipo && n.tipo.trim() !== "" ? n.tipo : "(Tipo de nota vacío)"
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    {editMode ? (
-                                                        <input
-                                                            type="number"
-                                                            value={n.nota}
-                                                            min="1"
-                                                            max="10"
-                                                            onChange={(e) =>
-                                                                handleCambioNota(
-                                                                    m.idCurso,
-                                                                    index,
-                                                                    "nota",
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        n.nota
-                                                    )}
-                                                </td>
-                                                {editMode && (
-                                                    <td className="td-accion">
-                                                        <button
-                                                            className="btn-eliminar"
-                                                            onClick={() => iniciarEliminacion(
-                                                                m.idCurso,
-                                                                'nota',
-                                                                index,
-                                                                n.tipo || 'Nueva Nota'
-                                                            )}
-                                                        >
-                                                            <FaTrashAlt size={14} />
-                                                        </button>
-                                                    </td>
-                                                )}
+                                <div className="tabla-wrapper">
+                                    <table className="tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Nota</th>
+                                                {editMode && <th className="th-accion"></th>}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {m.notas.map((n, index) => (
+                                                <tr key={n._id || index}>
+                                                    <td>
+                                                        {editMode ? (
+                                                            <input
+                                                                value={n.tipo}
+                                                                placeholder="Tipo (Obligatorio)"
+                                                                onChange={(e) =>
+                                                                    handleCambioNota(
+                                                                        m.idCurso,
+                                                                        index,
+                                                                        "tipo",
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            n.tipo && n.tipo.trim() !== "" ? n.tipo : "(Tipo de nota vacío)"
+                                                        )}
+                                                    </td>
+
+                                                    <td>
+                                                        {editMode ? (
+                                                            <input
+                                                                type="number"
+                                                                value={n.nota}
+                                                                min="1"
+                                                                max="10"
+                                                                onChange={(e) =>
+                                                                    handleCambioNota(
+                                                                        m.idCurso,
+                                                                        index,
+                                                                        "nota",
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            n.nota
+                                                        )}
+                                                    </td>
+                                                    {editMode && (
+                                                        <td className="td-accion">
+                                                            <button
+                                                                className="btn-eliminar"
+                                                                onClick={() => iniciarEliminacion(
+                                                                    m.idCurso,
+                                                                    'nota',
+                                                                    index,
+                                                                    n.tipo || 'Nueva Nota'
+                                                                )}
+                                                            >
+                                                                <FaTrashAlt size={14} />
+                                                            </button>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             ) : (
                                 <p>No tiene notas cargadas</p>
                             )}
@@ -615,81 +620,83 @@ export default function AlumnoAcordeon({
                             )}
 
                             {m.asistencias?.length > 0 ? (
-                                <table className="tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Presente</th>
-                                            {editMode && <th className="th-accion"></th>}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {m.asistencias.map((a, index) => (
-                                            <tr key={a._id || index}>
-
-                                                {/* FECHA EDITABLE */}
-                                                <td>
-                                                    {editMode ? (
-                                                        <input
-                                                            type="datetime-local" // ⚠️ CAMBIO A datetime-local
-                                                            max={getDatetimeLocalValue(new Date().toISOString())}
-                                                            value={getDatetimeLocalValue(a.fecha)} // ⚠️ Uso del helper
-                                                            onChange={(e) =>
-                                                                handleCambioFechaHoraAsistencia( // ⚠️ Cambio de función
-                                                                    m.idCurso,
-                                                                    index,
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        getFixedDateDisplay(a.fecha) // Uso de helper para mostrar fecha y hora
-                                                    )}
-                                                </td>
-
-                                                {/* PRESENTE */}
-                                                <td>
-                                                    {editMode ? (
-                                                        <select
-                                                            // 3. ACTUALIZAR EL SELECT PARA USAR LOS VALORES DEL ENUM
-                                                            value={a.presente}
-                                                            onChange={(e) =>
-                                                                handleCambioAsistencia(
-                                                                    m.idCurso,
-                                                                    index,
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        >
-                                                            <option value={ASISTENCIA_ENUM.PRESENTE}>Presente</option>
-                                                            <option value={ASISTENCIA_ENUM.AUSENTE}>Ausente</option>
-                                                            <option value={ASISTENCIA_ENUM.FERIADO}>Feriado</option>
-                                                            <option value={ASISTENCIA_ENUM.PARO}>Paro</option>
-                                                        </select>
-                                                    ) : (
-                                                        getAsistenciaDisplay(a.presente)
-                                                    )}
-                                                </td>
-                                                {editMode && (
-                                                    <td className="td-accion">
-                                                        <button
-                                                            className="btn-eliminar"
-                                                            onClick={() => iniciarEliminacion(
-                                                                m.idCurso,
-                                                                'asistencia',
-                                                                index,
-                                                                a.fecha
-                                                            )}
-                                                        >
-                                                            <FaTrashAlt size={14} />
-                                                        </button>
-                                                    </td>
-                                                )}
-
+                                <div className="tabla-wrapper">
+                                    <table className="tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Presente</th>
+                                                {editMode && <th className="th-accion"></th>}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {m.asistencias.map((a, index) => (
+                                                <tr key={a._id || index}>
+
+                                                    {/* FECHA EDITABLE */}
+                                                    <td>
+                                                        {editMode ? (
+                                                            <input
+                                                                type="datetime-local" // ⚠️ CAMBIO A datetime-local
+                                                                max={getDatetimeLocalValue(new Date().toISOString())}
+                                                                value={getDatetimeLocalValue(a.fecha)} // ⚠️ Uso del helper
+                                                                onChange={(e) =>
+                                                                    handleCambioFechaHoraAsistencia( // ⚠️ Cambio de función
+                                                                        m.idCurso,
+                                                                        index,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            getFixedDateDisplay(a.fecha) // Uso de helper para mostrar fecha y hora
+                                                        )}
+                                                    </td>
+
+                                                    {/* PRESENTE */}
+                                                    <td>
+                                                        {editMode ? (
+                                                            <select
+                                                                // 3. ACTUALIZAR EL SELECT PARA USAR LOS VALORES DEL ENUM
+                                                                value={a.presente}
+                                                                onChange={(e) =>
+                                                                    handleCambioAsistencia(
+                                                                        m.idCurso,
+                                                                        index,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                            >
+                                                                <option value={ASISTENCIA_ENUM.PRESENTE}>Presente</option>
+                                                                <option value={ASISTENCIA_ENUM.AUSENTE}>Ausente</option>
+                                                                <option value={ASISTENCIA_ENUM.FERIADO}>Feriado</option>
+                                                                <option value={ASISTENCIA_ENUM.PARO}>Paro</option>
+                                                            </select>
+                                                        ) : (
+                                                            getAsistenciaDisplay(a.presente)
+                                                        )}
+                                                    </td>
+                                                    {editMode && (
+                                                        <td className="td-accion">
+                                                            <button
+                                                                className="btn-eliminar"
+                                                                onClick={() => iniciarEliminacion(
+                                                                    m.idCurso,
+                                                                    'asistencia',
+                                                                    index,
+                                                                    a.fecha
+                                                                )}
+                                                            >
+                                                                <FaTrashAlt size={14} />
+                                                            </button>
+                                                        </td>
+                                                    )}
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             ) : (
                                 <p>No tiene asistencias cargadas</p>
                             )}
@@ -699,17 +706,11 @@ export default function AlumnoAcordeon({
 
                     {/* GRUPO DE BOTONES AL FINAL DEL ACORDEÓN */}
                     {editMode && (
-                        <div className="acordeon-actions">
-                            <button
-                                className="btn-cancelar"
-                                onClick={handleCancelar}
-                            >
+                        <div className="botones-acciones"> {/* 💡 Reemplazado por .botones-acciones */}
+                            <button className="btn-cancelar" onClick={handleCancelar}>
                                 Cancelar
                             </button>
-                            <button
-                                className="btn-guardar"
-                                onClick={handleGuardar}
-                            >
+                            <button className="btn-guardar" onClick={handleGuardar}>
                                 Guardar cambios
                             </button>
                         </div>

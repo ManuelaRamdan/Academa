@@ -187,54 +187,61 @@ button:disabled {
         width: 100%;
     }
 
-    /* ************************************************************* */
-    /* *** REGLA CRUCIAL PARA EVITAR SCROLL HORIZONTAL INNECESARIO *** */
-    /* ************************************************************* */
-    /* Es mejor poner esta regla en el CSS Global/Body, pero si no tienes acceso,
-       la forzamos aquí para pantallas pequeñas: */
     body {
         overflow-x: hidden;
     }
 }
 
-/* ============================
-   RESPONSIVE PARA PANTALLAS ULTRA PEQUEÑAS (Corrige la rotura a 350px)
-============================ */
-@media (max-width: 420px) {
-    
-    /* 1. Reducir el padding general del contenido */
-    .content {
-        padding: 15px; 
-        margin-top: 60px;
+.tabla-wrapper {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+/* Evita que el contenido colapse */
+.tabla-wrapper table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+/* Ajustes más estrictos para pantallas realmente chicas */
+@media (max-width: 450px) {
+
+    .tabla-wrapper {
+        overflow-x: auto;
+        padding-bottom: 10px; /* Para que el scroll no tape contenido */
     }
 
-    /* 2. Reducir el padding interno de las tarjetas */
-    .card, .materia-card {
-        padding: 15px; 
-        border-radius: 12px;
-    }
-    
-    /* 3. Asegurar que la barra lateral no sea más ancha que la pantalla */
-    .sidebar {
-        width: 250px; /* Máximo 250px para dejar espacio en pantallas de 350px */
+    .tabla-wrapper table {
+        font-size: 12px;
     }
 
-    /* 4. Ajustar el tamaño de fuente si es necesario */
-    .alumno-nombre, .profe-nombre {
-        font-size: 24px;
+    .tabla-wrapper table td,
+    .tabla-wrapper table th {
+        padding: 6px;
     }
-    
-    .seccion-titulo, .materia-titulo-color {
-        font-size: 18px;
-    }
-    
-    /* 5. Ajustar el padding de los ítems de acordeón para que quepan */
-    .acordeon-alumno {
-        padding: 6px; 
-    }
-    
-    .acordeon-header {
-        padding: 10px; 
+
+    /* Si tenés botones/iconos dentro de celdas */
+    .tabla-wrapper button,
+    .tabla-wrapper .icon-btn {
+        min-width: 36px;
+        padding: 6px;
+        font-size: 14px;
     }
 }
 
+.botones-acciones {
+    display: flex;
+    flex-wrap: wrap;     
+    gap: 10px;           
+    justify-content: flex-end; 
+}
+@media (max-width: 480px) {
+    .botones-acciones button {
+        width: 100%;        /* 👉 Se vuelven full-width */
+        text-align: center;
+    }
+}
