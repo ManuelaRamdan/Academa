@@ -5,8 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelPadre.css";
 import AlumnoInfo from "../../components/AlumnoInfo";
 
-
-
 export default function PadrePanel() {
     const { logout } = useAuth();
 

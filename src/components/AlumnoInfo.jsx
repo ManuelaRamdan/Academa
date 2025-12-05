@@ -2,20 +2,25 @@ import { useState } from "react";
 
 export default function AlumnoInfo({ alumno }) {
     const [abierto, setAbierto] = useState(null);
+    const [filtroMateria, setFiltroMateria] = useState(""); // <-- ✔ buscador
 
     const getFixedDateDisplay = (isoDate) => {
         if (!isoDate) return '';
         
         const date = new Date(isoDate);
-
-        // Forzar la extracción de los componentes de la fecha usando UTC
         const year = date.getUTCFullYear();
-        const month = date.getUTCMonth() + 1; // getUTCMonth es base 0
+        const month = date.getUTCMonth() + 1;
         const day = date.getUTCDate();
         
-        // Formatear a DD/MM/YYYY con relleno para un solo dígito
         return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
     };
+
+    // ✔ Filtrar materias según el texto buscado
+    const materiasFiltradas = alumno.materias?.filter(m =>
+        `${m.nombreCurso} ${m.nivel}${m.division} ${m.anio}`
+            .toLowerCase()
+            .includes(filtroMateria.toLowerCase())
+    ) || [];
 
     return (
         <div className="alumno-card">
@@ -24,11 +29,21 @@ export default function AlumnoInfo({ alumno }) {
 
             <h2 className="seccion-titulo">Materias</h2>
 
-            {(!alumno.materias || alumno.materias.length === 0) && (
-                <p>Este alumno no tiene materias cargadas.</p>
+            {/* 🔎 BUSCADOR DE MATERIAS — justo debajo del título */}
+            <input
+                type="text"
+                className="buscar-materia"
+                placeholder="Buscar materia..."
+                value={filtroMateria}
+                onChange={(e) => setFiltroMateria(e.target.value)}
+                style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
+            />
+
+            {materiasFiltradas.length === 0 && (
+                <p>No se encontraron materias.</p>
             )}
 
-            {alumno.materias?.map((mat, index) => {
+            {materiasFiltradas.map((mat, index) => {
                 const isOpen = abierto === index;
 
                 return (
