@@ -1,10 +1,17 @@
 // src/components/Admin/UsuariosPanel.jsx
 
 import { useEffect, useState, useCallback } from 'react';
-import { getAllUsuarios } from '../../services/userService';
+// IMPORTANTE: Asegúrate de importar getUsuarioById desde tu servicio
+import { getAllUsuarios, getUsuarioById } from '../../services/userService'; 
 import "../../styles/PanelUsuario.css";
 import UsuarioAcordeon from "./UsuarioAcordeon";
 import CrearUsuario from "./CrearUsuario";
+
+// Función auxiliar para verificar si el texto podría ser un ID de MongoDB
+// Los IDs de MongoDB tienen 24 caracteres hexadecimales.
+const isMongoId = (text) => {
+    return text.length === 24 && /^[0-9a-fA-F]+$/.test(text);
+};
 
 
 export default function UsuariosPanel() {
@@ -42,7 +49,6 @@ export default function UsuariosPanel() {
     // Función para cargar la PÁGINA actual (paginación)
     const cargarPaginaUsuarios = useCallback(async (page) => {
         if (page < 1) return;
-        // Solo verificamos el límite superior si ya tenemos la paginación cargada
         if (pagination.totalPages && page > pagination.totalPages) return;
 
         setCurrentPage(page);
@@ -54,7 +60,6 @@ export default function UsuariosPanel() {
             const lista = response.data.usuarios ?? [];
             
             setUsuariosPagina(lista);
-            // Inicialmente, la lista visible es la página actual
             setUsuariosFiltradosPagina(lista); 
             setPagination(response.data.pagination ?? {});
         } catch (err) {
@@ -72,33 +77,69 @@ export default function UsuariosPanel() {
     }, [cargarTodosLosUsuarios, cargarPaginaUsuarios]);
 
 
-    // Función de filtrado: busca en la lista completa (allUsuarios)
-    const filtrar = (texto) => {
-        setBusqueda(texto);
+    const buscarLocalmente = (texto) => {
+        const t = texto.toLowerCase();
+        
+        // 1. Filtra sobre *TODOS* los usuarios (allUsuarios)
+        const filtradosCompletos = allUsuarios.filter(u => 
+            u.nombre?.toLowerCase().includes(t) ||
+            u.email?.toLowerCase().includes(t) ||
+            u.hijos?.some(h => h.dni?.includes(t))
+        );
 
-        if (!texto.trim()) {
+        // 2. Muestra los primeros 'limit' (4) resultados
+        setUsuariosFiltradosPagina(filtradosCompletos.slice(0, limit)); 
+    }
+
+    // Función de filtrado: Acepta nombre/email/ID
+    const filtrar = async (texto) => {
+        setBusqueda(texto);
+        const t = texto.trim();
+        
+        if (!t) {
             // Si el texto está vacío, muestra la página actual
             setUsuariosFiltradosPagina(usuariosPagina);
             return;
         }
 
-        const t = texto.toLowerCase();
+        // 1. Intentar búsqueda por ID (usando la ruta del backend)
+        if (isMongoId(t)) {
+            setLoading(true);
+            try {
+                // Llama al endpoint específico /:id
+                const response = await getUsuarioById(t); 
+                
+                // CORRECCIÓN CLAVE: El objeto usuario se encuentra en response.data
+                const usuario = response.data;
+                
+                // Si la llamada es exitosa y devuelve el objeto usuario
+                if (usuario) {
+                    setUsuariosFiltradosPagina([usuario]);
+                } else {
+                    // Si el backend devuelve 200 pero data es null/undefined, busca localmente
+                    buscarLocalmente(t);
+                }
+                setError(null);
+            } catch (err) {
+                // Si la llamada falla (ej. 404 No encontrado, 500 error de servidor), busca localmente
+                // Nota: Axios lanza un error si el estado HTTP es 4xx o 5xx.
+                buscarLocalmente(t);
+            } finally {
+                setLoading(false);
+                return;
+            }
+        }
         
-        // 1. Filtra sobre *TODOS* los usuarios
-        const filtradosCompletos = allUsuarios.filter(u => 
-            u.nombre?.toLowerCase().includes(t) ||
-            u.email?.toLowerCase().includes(t)
-        );
-
-        // 2. Muestra los primeros 'limit' (4) resultados de la búsqueda global
-        setUsuariosFiltradosPagina(filtradosCompletos.slice(0, limit)); 
+        // 2. Búsqueda local (por nombre/email/parte del ID) en la lista completa
+        buscarLocalmente(t);
     };
+
 
     // Manejador para recargar las listas después de crear un usuario
     const handleSuccessCrearUsuario = () => {
         setOpenModal(false);
-        cargarTodosLosUsuarios(); // Recargar la lista completa para actualizar la búsqueda
-        cargarPaginaUsuarios(currentPage); // Recargar la página actual
+        cargarTodosLosUsuarios(); 
+        cargarPaginaUsuarios(currentPage); 
     };
 
 
@@ -130,9 +171,9 @@ export default function UsuariosPanel() {
                 {/* Campo de búsqueda */}
                 <input
                     type="text"
-                    placeholder="Buscar usuario ..."
+                    placeholder="Buscar usuario (Nombre, Email o ID)"
                     value={busqueda}
-                    onChange={(e) => filtrar(e.target.value)}
+                    onChange={(e) => filtrar(e.target.value)} 
                     className="buscar-usuario"
                 />
 
@@ -148,6 +189,11 @@ export default function UsuariosPanel() {
                             }
                         />
                     ))}
+                    
+                    {/* Mensaje si no hay resultados */}
+                    {busqueda.trim() && usuariosFiltradosPagina.length === 0 && (
+                        <p className="no-resultados">No se encontraron usuarios para la búsqueda "{busqueda}".</p>
+                    )}
                 </div>
 
                 {/* Muestra la paginación SOLO si no hay una búsqueda activa */}
