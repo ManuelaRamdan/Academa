@@ -7,3 +7,8 @@ export const getProfesorById = async () => {
 export const actualizarNotas = async (dni, materias) => {
     return api.put(`/api/profesores/alumno/dni/${dni}`, { materias });
 };
+
+
+export const getAllProfesores = (page = 1, limit = 10) => {
+    return api.get(`/api/profesores?page=${page}&limit=${limit}`);
+};

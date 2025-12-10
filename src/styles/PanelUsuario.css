@@ -1,0 +1,166 @@
+/* Fondo general */
+.admin-view {
+    background: #e6f5a8; 
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Tarjeta blanca central */
+.admin-card {
+    background: #ffffff;
+    width: 90%;
+    max-width: 1300px;
+    padding: 40px;
+    border-radius: 20px;
+    border: 4px solid #c7e894;
+}
+
+/* Header */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.seccion-titulo {
+    font-size: 2.4rem;
+    color: #268b67;
+    margin: 0;
+}
+
+/* Botón crear usuario */
+.btn-crear-usuario {
+    background: #2f9e73;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Buscador */
+.buscar-usuario {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 30px 0;
+    border-radius: 10px;
+    border: 2px solid #2f9e73;
+}
+
+/* Lista acordeones */
+.lista-acordeones {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Cada item */
+.usuario-item-card {
+    background: #d4f2d3;
+    border-radius: 18px;
+    padding: 8px;
+}
+
+/* Header del acordeón */
+.usuario-header-card {
+    background: #8cc8a2;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #0b4633;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+/* Flecha */
+.toggle-icon {
+    font-size: 1.6rem;
+}
+
+/* Body del acordeón */
+.usuario-body-details {
+    background: #f1faf1;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    color: #083b2c;
+}
+
+/* PAGINACIÓN */
+.admin-paginacion {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 40px;
+}
+
+.btn-paginacion {
+    padding: 8px 25px;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    background: #b2d8a0;
+    color: #0b4633;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-paginacion:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-card {
+    background: white;
+    padding: 25px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal-form input,
+.modal-form select {
+    width: 100%;
+    padding: 9px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn-cerrar {
+    background: #aaa;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white;
+}
+
+.btn-crear {
+    background: #0066ff;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white;
+}
+

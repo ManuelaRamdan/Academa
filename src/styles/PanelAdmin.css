@@ -1,0 +1,162 @@
+@import "./color.css";
+
+/* ============================
+   LAYOUT GENERAL
+============================ */
+.admin-layout {
+    display: flex;
+    height: 100vh;
+    background: var(--color1);
+}
+
+/* ============================
+   SIDEBAR
+============================ */
+.sidebar {
+    width: 270px;
+    background: var(--color5);
+    color: white;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-right: 3px solid var(--color2);
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    color: var(--color1);
+}
+
+.sidebar-btn {
+    padding: 14px;
+    background: var(--color2);
+    border-radius: 12px;
+    color: var(--color5);
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.sidebar-btn:hover {
+    background: var(--color3);
+}
+
+.sidebar-btn.active {
+    background: var(--color4);
+    color: white;
+    font-weight: 700;
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding: 14px;
+    background: var(--color3);
+    color: var(--color5);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.logout-btn:hover {
+    background: var(--color4);
+    color: white;
+}
+
+/* ============================
+   CONTENT
+============================ */
+.content {
+    flex: 1;
+    padding: 45px;
+    overflow-y: auto;
+}
+
+/* ============================
+   TARJETAS
+============================ */
+.alumno-card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    border: 2px solid var(--color2);
+    box-shadow: 0px 6px 20px var(--shadow);
+}
+
+.alumno-nombre {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color5);
+}
+
+.seccion-titulo {
+    margin-top: 25px;
+    font-size: 24px;
+    color: var(--color3);
+}
+
+/* ============================
+    BOTÓN HAMBURGUESA (MÓVIL)
+============================ */
+.hamburger {
+    display: none; /* Ocultar por defecto en escritorio */
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    padding: 10px 15px;
+    background: var(--color5);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+/* ============================
+    MEDIA QUERIES (PARA MÓVILES)
+============================ */
+@media (max-width: 768px) {
+
+    /* Mostrar botón hamburguesa */
+    .hamburger {
+        display: block;
+    }
+
+    /* Ajustar el layout para que el sidebar flote */
+    .admin-layout {
+        flex-direction: column; /* Apila los elementos */
+    }
+
+    /* Ocultar sidebar por defecto en móvil */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -270px; /* Desplazado fuera de la pantalla */
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Mostrar sidebar cuando tiene la clase 'open' */
+    .sidebar.open {
+        left: 0; /* Desplazado dentro de la pantalla */
+    }
+
+    /* El contenido ocupa todo el espacio en móvil */
+    .content {
+        width: 100%;
+        padding: 20px; /* Reducir padding para móvil */
+        margin-top: 60px; /* Espacio para el botón de hamburguesa flotante */
+    }
+}
+

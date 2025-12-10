@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Login from '../pages/login';
-import Admin from "../pages/admin/admin";
+import Admin from "../pages/admin/AdminPanel";
 import Profesor from "../pages/profesor/ProfesorPanel";
 import PadrePanel from "../pages/padre/PadrePanel";
 
@@ -17,7 +17,7 @@ function AppRouter() {
                 <Route
                     path="/admin"
                     element={
-                        <ProtectRoute allowedRole="admin">
+                        <ProtectRoute allowedRole="administrador">
                             <Admin />
                         </ProtectRoute>
                     }
