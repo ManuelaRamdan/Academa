@@ -3,20 +3,19 @@
 import { useEffect, useState, useCallback } from "react";
 // Importar la función para crear alumno
 import { createAlumno } from "../../../services/alumnoService";
-// Importar los servicios necesarios para obtener datos de referencia
+// Importar solo el servicio de cursos (ya que el curso contiene al profesor)
 import { getAllCursos } from "../../../services/cursoService"; 
-import { getAllProfesores } from "../../../services/profesorService"; 
+// Eliminamos la importación de getAllProfesores ya que no se usará directamente
 
 export default function CrearAlumno({ open, onClose, onSuccess }) {
     const [nombre, setNombre] = useState("");
     const [dni, setDni] = useState("");
     
-    // Lista de Cursos/Materias asignadas al alumno (Formato: [{idCurso: '...', profesor: {_id: '...', nombre: '...'}}])
-    const [materiasForm, setMateriasForm] = useState([{ idCurso: "", profesorId: "" }]); 
+    // Lista de Cursos/Materias asignadas: solo necesitamos el idCurso.
+    const [materiasForm, setMateriasForm] = useState([{ idCurso: "" }]); 
 
-    // Listas de datos de referencia (para los <select>)
+    // Lista de datos de referencia (para el <select>).
     const [cursosDisponibles, setCursosDisponibles] = useState([]);
-    const [profesoresDisponibles, setProfesoresDisponibles] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -26,43 +25,60 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
     // EFECTOS DE CARGA DE DATOS DE REFERENCIA
     // ===========================================
 
-    // Carga inicial de Cursos y Profesores
+    // Carga inicial de Cursos
     useEffect(() => {
-        // Cargar Cursos
+        setLoading(true);
         getAllCursos(1, 999)
-            .then((res) => setCursosDisponibles(res.data?.cursos ?? []))
-            .catch(() => setCursosDisponibles([]));
-
-        // Cargar Profesores
-        // NOTA: Para Crear Alumno, generalmente necesitamos la lista COMPLETA de profesores,
-        // sin preocuparnos si ya están asignados a un usuario, ya que un profesor puede
-        // estar a cargo de muchos cursos/alumnos.
-        getAllProfesores(1, 999) 
-            .then((res) => setProfesoresDisponibles(res.data?.profesores ?? []))
-            .catch(() => setProfesoresDisponibles([]));
+            .then((res) => {
+                // Asumimos que c.profesor ya está anidado en los datos del curso
+                setCursosDisponibles(res.data?.cursos ?? []); 
+            })
+            .catch((err) => {
+                setError("Error al cargar la lista de cursos disponibles.");
+                setCursosDisponibles([]);
+            })
+            .finally(() => setLoading(false));
     }, []);
+
 
     // ===========================================
     // MANEJO DEL FORMULARIO DE MATERIAS
     // ===========================================
 
-    const agregarMateria = () => setMateriasForm([...materiasForm, { idCurso: "", profesorId: "" }]);
+    const agregarMateria = () => {
+        // Validación: Evitar duplicados y entradas vacías antes de añadir
+        const tieneVacio = materiasForm.some(m => m.idCurso === "");
+        if (tieneVacio) {
+            setError("Primero debe seleccionar un curso en la fila vacía.");
+            return;
+        }
+        setMateriasForm([...materiasForm, { idCurso: "" }]);
+        setError(null);
+    }
 
-    const cambiarMateria = (i, campo, value) => {
+    const cambiarMateria = (i, value) => {
+        // Validar duplicados antes de aplicar el cambio
+        const esDuplicado = materiasForm.some((m, idx) => m.idCurso === value && idx !== i);
+        if (esDuplicado) {
+            setError("❌ Este curso ya fue asignado al alumno. Seleccione otro.");
+            return;
+        }
+
         const copia = [...materiasForm];
-        copia[i][campo] = value;
+        copia[i].idCurso = value;
         setMateriasForm(copia);
+        setError(null); // Limpiar error si el cambio es válido
     };
 
     const eliminarMateria = (i) => {
         const copia = materiasForm.filter((_, idx) => idx !== i);
-        // Asegurarse de que siempre haya al menos una fila si se elimina la última,
-        // o dejar vacío si el array original solo tenía una fila.
+        // Asegurar que siempre haya al menos una fila (a menos que el array original fuera 1)
         if (copia.length === 0) {
-            setMateriasForm([{ idCurso: "", profesorId: "" }]);
+            setMateriasForm([{ idCurso: "" }]);
         } else {
             setMateriasForm(copia);
         }
+        setError(null);
     };
 
     // ===========================================
@@ -72,7 +88,7 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
     const reset = () => {
         setNombre("");
         setDni("");
-        setMateriasForm([{ idCurso: "", profesorId: "" }]);
+        setMateriasForm([{ idCurso: "" }]); // Reinicia a una fila vacía
         setError(null);
         setSuccess(null); 
     };
@@ -93,30 +109,29 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
         setSuccess(null);
 
         // 1. Mapear las materias del formulario al formato esperado por el backend
+        // El backend espera: {idCurso} (el profesor lo buscará el backend)
         const materiasParaEnviar = materiasForm
-            .filter(m => m.idCurso && m.profesorId) // Filtra filas vacías
-            .map(m => {
-                const profesorData = profesoresDisponibles.find(p => p._id === m.profesorId);
-                // El backend espera: {idCurso, profesor: {_id, nombre}}
-                return {
-                    idCurso: m.idCurso,
-                    profesor: {
-                        _id: m.profesorId,
-                        nombre: profesorData?.nombre || "Profesor Desconocido" // Asegura el nombre
-                    }
-                };
-            });
+            .filter(m => m.idCurso) // Filtra filas donde no se ha seleccionado un curso
+            .map(m => ({
+                idCurso: m.idCurso,
+            }));
 
         // 2. Validaciones finales
-        if (materiasParaEnviar.length === 0) {
-             setError("Debe asignar al menos un curso/materia y un profesor.");
-             setLoading(false);
-             return;
+        if (!nombre.trim() || !dni.trim()) {
+            setError("El nombre y el DNI son campos obligatorios.");
+            setLoading(false);
+            return;
         }
-
+        
+        if (materiasParaEnviar.length === 0) {
+            setError("Debe asignar al menos un curso válido al alumno.");
+            setLoading(false);
+            return;
+        }
+        
         const data = {
-            nombre,
-            dni,
+            nombre: nombre.trim(),
+            dni: dni.trim(),
             materias: materiasParaEnviar,
         };
 
@@ -124,17 +139,17 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
             // Llama a tu función de servicio para crear el alumno
             await createAlumno(data);
 
-            setSuccess("Alumno creado correctamente");
-            onSuccess();
+            setSuccess("✅ Alumno creado correctamente.");
+            onSuccess(); // Notifica al componente padre
             // Opcionalmente, cierra el modal automáticamente:
-            // setTimeout(cerrar, 1500); 
+            setTimeout(cerrar, 2500); 
 
         } catch (err) {
+            // Manejo de errores: Captura el mensaje de error del back-end
             const msg =
                 err?.response?.data?.message ||
-                err?.response?.data?.error ||
                 err?.message ||
-                "Error al crear alumno";
+                "Error desconocido al crear alumno";
 
             setError(msg);
         } finally {
@@ -150,8 +165,8 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
 
                 <h2>Crear Alumno</h2>
 
-                {success && <p className="success">{success}</p>}
-                {error && <p className="error">{error}</p>}
+                {success && <p className="success message-box">{success}</p>}
+                {error && <p className="error message-box">{error.message}</p>}
 
                 <form onSubmit={submit} className="modal-form">
                     <label>Nombre Completo</label>
@@ -160,6 +175,7 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
                         onChange={e => setNombre(e.target.value)} 
                         required 
                         placeholder="Ej: Juan Pérez"
+                        disabled={loading}
                     />
 
                     <label>DNI</label>
@@ -169,34 +185,25 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
                         onChange={e => setDni(e.target.value)} 
                         required 
                         placeholder="Ej: 45123456"
+                        disabled={loading}
                     />
 
                     <label className="label-grande">Asignación de Cursos</label>
 
                     {materiasForm.map((materia, i) => (
-                        <div key={i} className="fila-materia">
+                        // Estructura de la fila de materia simplificada
+                        <div key={i} className="fila-materia-simple"> 
                             <select
                                 value={materia.idCurso}
-                                onChange={(e) => cambiarMateria(i, "idCurso", e.target.value)}
+                                onChange={(e) => cambiarMateria(i, e.target.value)}
                                 required
+                                disabled={loading}
                             >
-                                <option value="">Seleccione Curso/Materia...</option>
+                                <option value="">Seleccione Curso y Profesor...</option>
                                 {cursosDisponibles.map(c => (
-                                    <option key={c._id} value={c._id}>
-                                        {c.nombreCurso} ({c.anio}° {c.division})
-                                    </option>
-                                ))}
-                            </select>
-
-                            <select
-                                value={materia.profesorId}
-                                onChange={(e) => cambiarMateria(i, "profesorId", e.target.value)}
-                                required
-                            >
-                                <option value="">Seleccione Profesor...</option>
-                                {profesoresDisponibles.map(p => (
-                                    <option key={p._id} value={p._id}>
-                                        {p.nombre}
+                                    <option key={c._id} value={c._id} disabled={materiasForm.some(m => m.idCurso === c._id && m.idCurso !== materia.idCurso)}>
+                                        {/* Mostramos el curso Y el profesor para que el usuario sepa la asignación */}
+                                        {c.nombreMateria} ( {c.nivel}{c.division} - {c.anio}°) - Prof: {c.profesor?.nombre || 'N/A'}
                                     </option>
                                 ))}
                             </select>
@@ -205,19 +212,19 @@ export default function CrearAlumno({ open, onClose, onSuccess }) {
                                 type="button"
                                 onClick={() => eliminarMateria(i)}
                                 className="btn-eliminar"
-                                disabled={materiasForm.length === 1}
+                                disabled={materiasForm.length === 1 || loading}
                             >
                                 Eliminar
                             </button>
                         </div>
                     ))}
 
-                    <button type="button" className="btn-secundario" onClick={agregarMateria}>
+                    <button type="button" className="btn-secundario" onClick={agregarMateria} disabled={loading}>
                         + Añadir Curso
                     </button>
 
                     <div className="modal-actions">
-                        <button type="button" className="btn-cerrar" onClick={cerrar}>
+                        <button type="button" className="btn-cerrar" onClick={cerrar} disabled={loading}>
                             Cancelar
                         </button>
 
