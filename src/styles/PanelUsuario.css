@@ -1,118 +1,209 @@
-/* Fondo general */
-.admin-view {
-    background: #e6f5a8; 
-    min-height: 100vh;
-    padding: 40px;
+@import "./color.css";
+
+/* ============================
+      LAYOUT GENERAL
+============================ */
+.admin-layout {
     display: flex;
-    justify-content: center;
+    height: 100vh;
+    background: var(--color1);
 }
 
-/* Tarjeta blanca central */
-.admin-card {
-    background: #ffffff;
-    width: 90%;
-    max-width: 1300px;
-    padding: 40px;
-    border-radius: 20px;
-    border: 4px solid #c7e894;
-}
-
-/* Header */
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.seccion-titulo {
-    font-size: 2.4rem;
-    color: #268b67;
-    margin: 0;
-}
-
-/* Botón crear usuario */
-.btn-crear-usuario {
-    background: #2f9e73;
+/* ============================
+      SIDEBAR (idéntico al padre)
+============================ */
+.admin-sidebar {
+    width: 270px;
+    background: var(--color5);
     color: white;
-    padding: 10px 25px;
-    border-radius: 20px;
-    border: none;
-    font-size: 1.1rem;
-    cursor: pointer;
-}
-
-/* Buscador */
-.buscar-usuario {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 30px 0;
-    border-radius: 10px;
-    border: 2px solid #2f9e73;
-}
-
-/* Lista acordeones */
-.lista-acordeones {
+    padding: 28px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
+    border-right: 3px solid var(--color2);
 }
 
-/* Cada item */
-.usuario-item-card {
-    background: #d4f2d3;
-    border-radius: 18px;
-    padding: 8px;
+.admin-sidebar-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    color: var(--color1);
 }
 
-/* Header del acordeón */
-.usuario-header-card {
-    background: #8cc8a2;
-    padding: 20px;
-    border-radius: 15px;
+.btn-sidebar {
+    padding: 14px;
+    background: var(--color2);
+    border-radius: 12px;
+    color: var(--color5);
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.btn-sidebar:hover {
+    background: var(--color3);
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding: 14px;
+    background: var(--color3);
+    color: var(--color5);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.logout-btn:hover {
+    background: var(--color4);
+    color: white;
+}
+
+/* ============================
+      CONTENIDO
+============================ */
+.admin-content {
+    flex: 1;
+    padding: 45px;
+    overflow-y: auto;
+}
+
+/* Tarjeta principal */
+.admin-card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    border: 2px solid var(--color2);
+    box-shadow: 0px 6px 20px var(--shadow);
+}
+
+.admin-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.seccion-titulo {
+    grid-column: 2;        /* centro REAL */
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color5);
+}
+
+.btn-crear-usuario {
+    grid-column: 3;
+    justify-self: end;
+
+    width: fit-content;
+    padding: 8px 10px;
+    font-size: 18px;
+
+    background: var(--color2);
+    color: var(--color5);
+    border-radius: 8px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s;
+
+    margin-top: 50px; 
+}
+
+.btn-crear-usuario:hover {
+    background: var(--color3);
+}
+
+/* Campo de búsqueda */
+.buscar-usuario {
+    width: 100%;
+    margin-top: 22px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 2px solid var(--color3);
+    font-size: 15px;
+    outline: none;
+}
+
+/* Lista */
+.lista-acordeones {
+    margin-top: 28px;
+}
+
+/* Paginación */
+.admin-paginacion {
+    margin-top: 25px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    color: #0b4633;
-    font-size: 1.3rem;
-    cursor: pointer;
-}
-
-/* Flecha */
-.toggle-icon {
-    font-size: 1.6rem;
-}
-
-/* Body del acordeón */
-.usuario-body-details {
-    background: #f1faf1;
-    padding: 20px;
-    margin-top: 10px;
-    border-radius: 15px;
-    font-size: 1.1rem;
-    color: #083b2c;
-}
-
-/* PAGINACIÓN */
-.admin-paginacion {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    gap: 40px;
 }
 
 .btn-paginacion {
-    padding: 8px 25px;
-    font-size: 1.2rem;
-    border-radius: 20px;
-    background: #b2d8a0;
-    color: #0b4633;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: var(--color2);
+    color: var(--color5);
     border: none;
     cursor: pointer;
+    transition: .3s;
 }
 
 .btn-paginacion:disabled {
-    opacity: 0.4;
+    opacity: .5;
     cursor: not-allowed;
+}
+
+.btn-paginacion:hover:not(:disabled) {
+    background: var(--color3);
+}
+
+/* ============================
+      ACORDEÓN DE USUARIO
+============================ */
+.usuario-item-card {
+    background: color-mix(in srgb, var(--color2) 40%, transparent);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 15px;
+    border-left: 5px solid var(--color5);
+    box-shadow: 0px 3px 12px var(--shadow-soft);
+}
+
+.usuario-header-card {
+    padding: 14px;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--color3) 40%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--color5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.25s;
+}
+
+.usuario-header-card:hover {
+    background: var(--color4);
+    color: white;
+}
+
+.usuario-body-details {
+    margin-top: 12px;
+    padding: 14px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--color3);
+}
+
+.no-resultados {
+    margin-top: 20px;
+    color: var(--color5);
+    font-weight: 600;
+    text-align: center;
 }
 
 .modal-overlay {
@@ -128,7 +219,7 @@
 }
 
 .modal-card {
-    background: white;
+    background: var(--color1);
     padding: 25px;
     width: 400px;
     border-radius: 10px;
@@ -151,16 +242,15 @@
 }
 
 .btn-cerrar {
-    background: #aaa;
+    background: var(--color2);
     padding: 8px 15px;
     border-radius: 6px;
-    color: white;
+    color: black;
 }
 
 .btn-crear {
-    background: #0066ff;
+   background: var(--color3);
     padding: 8px 15px;
     border-radius: 6px;
     color: white;
 }
-
