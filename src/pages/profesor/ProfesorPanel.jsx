@@ -204,6 +204,7 @@ export default function ProfesorPanel() {
                                             materiasDelAlumno={materiasDelAlumno}
                                             isOpen={openAlumnoId === al._id}
                                             onToggle={() => toggleAlumno(al._id)}
+                                            userRole="PROFESOR"
                                             onGuardarCambios={(materiaActualizada) =>
                                                 guardarCambiosAlumno(al.dni, materiaActualizada)
                                             }

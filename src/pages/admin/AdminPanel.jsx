@@ -6,6 +6,7 @@ import UsuariosPanel from "../../components/admin/usuarios/UsuarioPanel";
 import MateriasPanel from "../../components/admin/materia/MateriaPanel";
 import CursosPanel from "../../components/admin/cursos/CursoPanel";
 import ProfesoresPanel from "../../components/admin/profesor/ProfesorPanel";
+import AlumnosPanel from "../../components/admin/alumno/AlumnoPanel";
 
 const SECCIONES = [
     { id: 'usuarios', nombre: 'Usuarios' },
@@ -23,6 +24,7 @@ const renderContent = (seccionSeleccionada) => {
         case 'materias': return <MateriasPanel />;
         case 'cursos': return <CursosPanel />;
         case 'profesores': return <ProfesoresPanel />;
+        case 'alumnos': return <AlumnosPanel />;
         default: return (
             <div>
                 <h1>👋 Bienvenido, Administrador</h1>
