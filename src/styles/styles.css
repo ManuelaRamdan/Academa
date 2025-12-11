@@ -153,7 +153,6 @@ button:disabled {
     .hamburger {
         display: flex;
     }
-
     /* 2. Ocultamos la barra lateral por defecto y la ponemos en posición fija. */
     .sidebar {
         position: fixed;

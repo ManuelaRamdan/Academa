@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelAdmin.css";
-import UsuariosPanel from "../../components/admin/UsuarioPanel";
+import UsuariosPanel from "../../components/admin/usuarios/UsuarioPanel";
+import MateriasPanel from "../../components/admin/materia/MateriaPanel";
+import CursosPanel from "../../components/admin/cursos/CursoPanel";
+import ProfesoresPanel from "../../components/admin/profesor/ProfesorPanel";
 
 const SECCIONES = [
     { id: 'usuarios', nombre: 'Usuarios' },
@@ -17,6 +20,9 @@ const SECCIONES = [
 const renderContent = (seccionSeleccionada) => {
     switch (seccionSeleccionada) {
         case 'usuarios': return <UsuariosPanel />;
+        case 'materias': return <MateriasPanel />;
+        case 'cursos': return <CursosPanel />;
+        case 'profesores': return <ProfesoresPanel />;
         default: return (
             <div>
                 <h1>👋 Bienvenido, Administrador</h1>
@@ -32,18 +38,17 @@ export default function AdminPanel() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     // Cambiamos la inicialización para que coincida con el primer elemento de SECCIONES
-    const [seccionSeleccionada, setSeccionSeleccionada] = useState(SECCIONES[0].id); 
+    const [seccionSeleccionada, setSeccionSeleccionada] = useState(SECCIONES[0].id);
     const [menuAbierto, setMenuAbierto] = useState(false);
 
     const toggleMenu = () => {
         setMenuAbierto(prev => !prev);
     };
 
-    // ... (useEffect comentado)
 
     const seleccionarSeccion = (id) => {
         setSeccionSeleccionada(id);
-        setMenuAbierto(false); 
+        setMenuAbierto(false);
     };
 
     if (loading) return <h2 className="loading">Cargando...</h2>;
@@ -71,7 +76,7 @@ export default function AdminPanel() {
                     ))}
 
                     {/* Separador visual opcional */}
-                    <div className="sidebar-divider"></div> 
+                    <div className="sidebar-divider"></div>
 
                     <button onClick={logout} className="logout-btn">
                         Cerrar sesión

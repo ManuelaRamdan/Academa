@@ -1,6 +1,6 @@
 import api from "./api";
 
-export const getProfesorById = async () => {
+export const profeGetMiInfo = async () => {
     return api.get(`/api/profesores/me`);
 };
 
@@ -12,3 +12,8 @@ export const actualizarNotas = async (dni, materias) => {
 export const getAllProfesores = (page = 1, limit = 10) => {
     return api.get(`/api/profesores?page=${page}&limit=${limit}`);
 };
+
+export const getProfesorById = async (id) => {
+    return api.get(`/api/profesores/${id}`);
+};
+

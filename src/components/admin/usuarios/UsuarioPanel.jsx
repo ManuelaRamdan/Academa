@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 // IMPORTANTE: Asegúrate de importar getUsuarioById desde tu servicio
-import { getAllUsuarios, getUsuarioById } from '../../services/userService'; 
-import "../../styles/PanelUsuario.css";
+import { getAllUsuarios, getUsuarioById } from '../../../services/userService'; 
+import "../../../styles/PanelUsuario.css";
 import UsuarioAcordeon from "./UsuarioAcordeon";
 import CrearUsuario from "./CrearUsuario";
 
@@ -15,11 +15,8 @@ const isMongoId = (text) => {
 
 
 export default function UsuariosPanel() {
-    // Estado para la lista completa de usuarios (para la búsqueda global)
     const [allUsuarios, setAllUsuarios] = useState([]); 
-    // Estado para la lista de usuarios de la página actual (limit=4)
     const [usuariosPagina, setUsuariosPagina] = useState([]); 
-    // Estado para la lista que se renderiza (páginada o filtrada)
     const [usuariosFiltradosPagina, setUsuariosFiltradosPagina] = useState([]); 
 
     const [pagination, setPagination] = useState({});

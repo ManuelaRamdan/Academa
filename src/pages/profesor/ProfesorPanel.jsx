@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProfesorById } from "../../services/profesorService";
+import { profeGetMiInfo } from "../../services/profesorService";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelProfesor.css";
 import AlumnoAcordeon from "../../components/AlumnoAcordeon";
@@ -29,7 +29,7 @@ export default function ProfesorPanel() {
             try {
                 setLoading(true);
 
-                const res = await getProfesorById();
+                const res = await profeGetMiInfo();
                 const data = res.data ?? res;
 
                 setProfesor(data);

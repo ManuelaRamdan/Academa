@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { createUsuario } from "../../services/userService";
-import { getAllProfesores } from "../../services/profesorService";
-import { getAllUsuarios } from "../../services/userService";     
-import { getAllAlumnos } from "../../services/alumnoService";       
+import { createUsuario } from "../../../services/userService";
+import { getAllProfesores } from "../../../services/profesorService";
+import { getAllUsuarios } from "../../../services/userService";     
+import { getAllAlumnos } from "../../../services/alumnoService";       
 
 export default function CrearUsuario({ open, onClose, onSuccess }) {
     const [nombre, setNombre] = useState("");
