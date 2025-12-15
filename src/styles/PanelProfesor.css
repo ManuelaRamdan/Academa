@@ -1,34 +1,5 @@
 @import "./color.css";
 
-/* ============================
-    LAYOUT PROFESOR (Reutiliza el layout del padre)
-    Nota: En el componente .jsx la clase principal DEBE ser "padre-layout"
-    o "prof-layout" debe ser renombrada a "padre-layout" para funcionar.
-    Asumo que usas las clases comunes ya definidas en PanelPadre.css y Global.css.
-============================ */
-
-/* Si mantienes .prof-layout en el .jsx, debe ser igual a .padre-layout */
-.prof-layout {
-    display: flex;
-    height: 100vh;
-    background: var(--color1);
-}
-
-/* El estilo de .sidebar, .sidebar-title, .sidebar-btn, .sidebar-btn.active, .logout-btn
-   y .content se asume que ya está en PanelPadre.css y Global.css,
-   ¡Pero debemos redefinir el sidebar-scroll del profesor! */
-
-.sidebar-title {
-    /* Mantener estilo del padre: color5 en background oscuro */
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(255,255,255,0.3);
-    color: var(--color1); /* Título del sidebar en color claro */
-}
-
-/* Contenedor de scroll para el listado de materias en la sidebar */
 .sidebar-scroll {
     overflow-y: auto;
     flex-grow: 1; /* Ocupa el espacio restante */
@@ -39,10 +10,6 @@
     padding-right: 5px;
 }
 
-/* ============================
-    CONTENIDO PRINCIPAL (Equivalente a .alumno-card del padre)
-============================ */
-
 .materia-card {
     background: white;
     padding: 32px;
@@ -51,7 +18,6 @@
     box-shadow: 0px 6px 20px var(--shadow);
 }
 
-/* Nombre del profesor */
 .profe-nombre {
     font-size: 32px;
     font-weight: 700;
@@ -63,33 +29,27 @@
     font-size: 24px;
     color: var(--color3);
 }
+
 .buscar-materia {
-    /* Input en sidebar, margen inferior más pequeño */
     margin-bottom: 8px;
 }
 
 .buscar-alumno {
-    /* Input en el contenido principal */
     margin-bottom: 25px;
-    width: 100%; /* El input debe ocupar el ancho completo */
+    width: 100%; 
 }
 
-/* ============================
-    ACORDEÓN ALUMNO (Equivalente a .materia-item del padre)
-============================ */
 .acordeon-alumno {
-    /* Estilo igual a .materia-item del padre */
     background: color-mix(in srgb, var(--color2) 40%, transparent);
     border-radius: 14px;
     padding: 12px;
     margin-top: 15px;
     border-left: 5px solid var(--color5);
     box-shadow: 0px 3px 12px var(--shadow-soft);
-    margin-bottom: 15px; /* Separación entre acordeones de alumnos */
+    margin-bottom: 15px; 
 }
 
 .acordeon-header {
-    /* Estilo igual a .materia-header del padre */
     padding: 14px;
     font-weight: 700;
     background: color-mix(in srgb, var(--color3) 40%, transparent);
@@ -108,7 +68,6 @@
 }
 
 .acordeon-body {
-    /* Estilo igual a .materia-body del padre */
     margin-top: 12px;
     padding: 14px;
     background: white;
@@ -116,91 +75,76 @@
     border: 1px solid var(--color3);
 }
 
-/* ============================
-    ACCIONES Y TABLAS
-============================ */
-
-/* Reutilizamos .tabla del CSS general, solo aseguramos que el margen sea consistente */
 .tabla {
-    margin-bottom: 15px; /* Más consistente con el padding */
+    margin-bottom: 15px; 
 }
 
-/* Acciones (Guardar/Cancelar) - Mantener los estilos profesionales */
 .acordeon-actions {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
     margin-top: 20px;
     padding-top: 10px;
-    border-top: 1px solid var(--color3); /* Separador sutil */
+    border-top: 1px solid var(--color3); 
 }
 
 .btn-guardar, .btn-cancelar {
-    /* Aplicamos el estilo general de button, y luego los ajustes */
-    width: auto; /* Para que no ocupe 100% como los botones de formulario */
+    width: auto;
     padding: 10px 20px;
     font-size: 15px;
-    border-radius: 12px; /* Usar el radio del botón general */
+    border-radius: 12px; 
 }
 
 .btn-guardar {
-    background-color: var(--color5); /* Color principal del tema */
+    background-color: var(--color5); 
     color: white;
 }
 
 .btn-guardar:hover {
-    background: #43473f; /* Tono de hover del botón general */
+    background: #43473f; 
 }
 
 .btn-cancelar {
-    background-color: var(--color3); /* Usamos el color de acento del padre */
-    color: var(--color5); /* Texto oscuro para contraste */
+    background-color: var(--color3); 
+    color: var(--color5); 
 }
 
 .btn-cancelar:hover {
-    background: var(--color4); /* Tono de acento más fuerte */
+    background: var(--color4); 
     color: white;
 }
-
-/* =======================================
-   ESTILOS DE NOTIFICACIÓN (Usando la paleta)
-   ======================================= */
 
 .notification-box {
     padding: 12px 18px;
     margin: 15px 0;
-    border-radius: 8px; /* Bordes un poco más suaves */
+    border-radius: 8px; 
     font-weight: bold;
     border: 1px solid transparent;
-    color: var(--color5); /* Texto principal */
+    color: var(--color5); 
     box-shadow: 0 2px 4px var(--shadow-soft);
 }
 
-/* Error: Se mantiene el rojo por convención, ajustado al tema */
 .notification-error {
-    background-color: #FFEBEE; /* Rojo extremadamente claro */
-    color: #C62828; /* Rojo oscuro */
+    background-color: #FFEBEE; 
+    color: #C62828; 
     border-color: #FFCDD2;
 }
 
-/* Warning/Advertencia: Usamos un amarillo suave */
 .notification-warning {
-    background-color: #FFFDE7; /* Amarillo muy claro */
-    color: #FBC02D; /* Amarillo mostaza oscuro */
+    background-color: #FFFDE7; 
+    color: #FBC02D; 
     border-color: #FFF9C4;
 }
 
-/* Success/Éxito: Usamos los colores de la paleta (color2/color4) */
 .notification-success {
-    background-color: var(--color2); /* Acento suave */
-    color: var(--color5); /* Texto oscuro para contraste */
-    border-color: var(--color4); /* Tono intermedio */
+    background-color: var(--color2); 
+    color: var(--color5); 
+    border-color: var(--color4); 
 }
 
-/* Info: Para mensajes como "Cambios descartados" */
 .notification-info {
-    background-color: #E3F2FD; /* Azul claro suave */
-    color: #1565C0; /* Azul oscuro */
+    background-color: #E3F2FD; 
+    color: #1565C0; 
     border-color: #BBDEFB;
 }
 

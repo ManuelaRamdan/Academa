@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 // IMPORTANTE: Asegúrate de importar getUsuarioById desde tu servicio
 import { getAllUsuarios, getUsuarioById } from '../../../services/userService'; 
-import "../../../styles/PanelUsuario.css";
+//import "../../../styles/PanelUsuario.css";
 import UsuarioAcordeon from "./UsuarioAcordeon";
 import CrearUsuario from "./CrearUsuario";
 

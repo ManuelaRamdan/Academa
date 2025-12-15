@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 // IMPORTANTE: Asegúrate de importar desde el nuevo servicio
 import { getAllCursos, getCursoById, getCursoByIdProfe} from '../../../services/cursoService';
 import CursoAcordeon from "./CursoAcordeon";
-import "../../../styles/PanelUsuario.css"; // Se reutiliza el CSS
+//import "../../../styles/PanelUsuario.css"; // Se reutiliza el CSS
 
 // Función auxiliar para verificar si el texto podría ser un ID de MongoDB
 const isMongoId = (text) => {

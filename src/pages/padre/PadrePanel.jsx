@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { getHijosPadre, getAlumnoById } from "../../services/padreService";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/PanelComun.css";
 import "../../styles/PanelPadre.css";
 import AlumnoInfo from "../../components/AlumnoInfo";
 
@@ -63,7 +64,7 @@ const toggleMenu = () => {
             {/* BOTÓN HAMBURGUESA */}
             <button className="hamburger" onClick={toggleMenu}>☰</button>
 
-            <div className="padre-layout">
+            <div className="layout-base">
 
                 {/* SIDEBAR */}
                 <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>

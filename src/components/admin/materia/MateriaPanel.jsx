@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getAllMaterias, getMateriaById } from '../../../services/materiaService'; 
 import MateriaAcordeon from "./MateriaAcordeon"; // Componente Acordeón para Materias
-import "../../../styles/PanelUsuario.css";
+//import "../../../styles/PanelUsuario.css";
 
 // Función auxiliar para verificar si el texto podría ser un ID de MongoDB
 // Los IDs de MongoDB tienen 24 caracteres hexadecimales.

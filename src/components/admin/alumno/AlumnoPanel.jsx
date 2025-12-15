@@ -3,11 +3,11 @@ import {
     getAllAlumnos, 
     getAlumnoById, 
     getAlumnoByDni,
-    updateAlumno, // 🆕 Importar servicio de actualización
-    deleteAlumno, // 🆕 Importar servicio de eliminación
-} from '../../../services/alumnoService'; // Asegúrate de que estos servicios estén disponibles aquí
+    updateAlumno,
+    deleteAlumno,
+} from '../../../services/alumnoService'; 
 
-import "../../../styles/PanelUsuario.css"; 
+//import "../../../styles/PanelUsuario.css"; 
 import AlumnoAcordeon from "../../AlumnoAcordeon";
 import CrearAlumno from "./CrearAlumno";
 
@@ -28,14 +28,13 @@ export default function AlumnosPanel() {
     const [currentPage, setCurrentPage] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const [openedAlumno, setOpenedAlumno] = useState(null);
-    const [openModal, setOpenModal] = useState(false);
     
-    // 🆕 Estado de carga/error para operaciones de actualización/eliminación
     const [operationMessage, setOperationMessage] = useState({ type: '', message: '' });
 
     const limit = 4;
-    // 🆕 El rol en este componente es fijo: Administrador
     const userRole = 'ADMIN'; 
+
+    const [openModal, setOpenModal] = useState(false);
 
 
     // Cargar TODOS los alumnos para filtrar globalmente
@@ -46,14 +45,14 @@ export default function AlumnosPanel() {
             setAllAlumnos(listaCompleta);
         } catch (err) {
             console.error("Error al cargar todos los alumnos:", err);
-            // No seteamos error aquí para no bloquear la vista principal si falla el listado completo
         }
     }, []);
 
-    // Cargar alumnos con paginación
+    // Cargar alumnos con paginación (AJUSTE: Dependencias de useCallback)
     const cargarPaginaAlumnos = useCallback(async (page) => {
         if (page < 1) return;
-        // 💡 Solo verificar si busqueda está vacía para evitar bugs de paginación
+        // La condición de guardia usa la 'busqueda' de la clausura, pero el hook no se dispara
+        // por cambios en 'busqueda' no relacionados a la paginación.
         if (!busqueda.trim() && pagination.totalPages && page > pagination.totalPages) return; 
 
         setCurrentPage(page);
@@ -68,15 +67,12 @@ export default function AlumnosPanel() {
             setAlumnosFiltradosPagina(lista);
             setPagination(response.data.pagination ?? {});
             
-            // Si estábamos buscando, y ahora estamos paginando, borramos la búsqueda
-            if (busqueda.trim() !== "") setBusqueda(""); 
-
         } catch (err) {
             setError("Error al cargar la lista de alumnos.");
         } finally {
             setLoading(false);
         }
-    }, [limit, pagination.totalPages, busqueda]); // Añadir 'busqueda' como dependencia para el chequeo de arriba
+    }, [limit, pagination.totalPages]); 
 
     // Carga inicial
     useEffect(() => {
@@ -85,7 +81,7 @@ export default function AlumnosPanel() {
     }, [cargarTodosLosAlumnos, cargarPaginaAlumnos]);
 
 
-    // Búsqueda local (sin cambios)
+    // Búsqueda local (sobre allAlumnos)
     const buscarLocalmente = (texto) => {
         const t = texto.toLowerCase();
 
@@ -95,55 +91,78 @@ export default function AlumnosPanel() {
             a.dni?.toString().includes(t)
         );
 
+        // Muestra los primeros 'limit' (4) resultados
         setAlumnosFiltradosPagina(filtrados.slice(0, limit));
     };
 
 
-    // Filtro general (sin cambios)
+    // Filtro general (CASCADA ID -> DNI -> LOCAL)
     const filtrar = async (texto) => {
         setBusqueda(texto);
         const t = texto.trim();
+        setOperationMessage({ type: '', message: '' }); 
 
         if (!t) {
             setAlumnosFiltradosPagina(alumnosPagina);
             return;
         }
+        
+        setLoading(true);
 
-        // Búsqueda por ID de Mongo
-        if (isMongoId(t)) {
-            setLoading(true);
-            try {
-                const response = await getAlumnoById(t);
-                const alumno = response.data;
-                alumno
-                    ? setAlumnosFiltradosPagina([alumno])
-                    : buscarLocalmente(t);
-            } catch {
-                buscarLocalmente(t);
-            } finally {
-                setLoading(false);
-                return;
-            }
-        }
+        try {
+            let alumnoResultado = null;
 
-        // Búsqueda por DNI exacto
-        if (!isNaN(t)) {
-            try {
-                const response = await getAlumnoByDni(t);
-                if (response.data) {
-                    setAlumnosFiltradosPagina([response.data]);
-                    return;
+            // ===================================
+            // 1. Intentar búsqueda por ID de Alumno (Endpoint: /:id)
+            // ===================================
+            if (isMongoId(t)) {
+                try {
+                    const response = await getAlumnoById(t);
+                    alumnoResultado = response.data;
+
+                    if (alumnoResultado) {
+                        setAlumnosFiltradosPagina([alumnoResultado]);
+                        return; // Éxito por ID, terminamos aquí
+                    }
+                } catch (err) {
+                    // Falla el ID, continuamos la ejecución
                 }
-            } catch {
-                // Si no existe, cae a búsqueda local
             }
-        }
+            
+            // ===================================
+            // 2. Intentar búsqueda por DNI (Endpoint: /dni/:dni)
+            // Se ejecuta si no se encontró por ID, y el texto es numérico
+            // ===================================
+            if (!alumnoResultado && !isNaN(t) && t.length >= 7) { 
+                try {
+                    const response = await getAlumnoByDni(t);
+                    alumnoResultado = response.data;
+                    
+                    if (alumnoResultado) {
+                        setAlumnosFiltradosPagina([alumnoResultado]);
+                        return; // Éxito por DNI, terminamos aquí
+                    }
+                } catch (err) {
+                    // Falla DNI, procedemos a búsqueda local
+                }
+            }
 
-        // Búsqueda por nombre/apellido/DNI parcial
-        buscarLocalmente(t);
+            // ===================================
+            // 3. Búsqueda local (si falló ID y DNI, o si la entrada es texto parcial)
+            // ===================================
+            buscarLocalmente(t); 
+            
+        } catch (globalError) {
+            // Error de conexión grave
+            setError("Ocurrió un error inesperado durante la búsqueda.");
+            buscarLocalmente(t); 
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Recargar luego de crear (sin cambios)
+
+    // Recargar luego de crear
     const handleSuccessCrearAlumno = () => {
         setOpenModal(false);
         cargarTodosLosAlumnos();
@@ -151,21 +170,19 @@ export default function AlumnosPanel() {
     };
     
     /* ====================================================
-        🆕 NUEVAS FUNCIONES DE ACCIÓN PARA EL ADMINISTRADOR
-       ==================================================== */
+        FUNCIONES DE ACCIÓN PARA EL ADMINISTRADOR
+        ==================================================== */
 
     // 1. Manejar la actualización completa del alumno (Admin)
     const handleActualizarAlumnoCompleto = async ({ alumnoId, datosAlumno, materias }) => {
         setOperationMessage({ type: 'info', message: 'Guardando cambios del alumno...' });
         try {
-            // El backend espera el objeto { nombre, dni, materias: [...] }
             const payload = { ...datosAlumno, materias: materias };
             
             await updateAlumno(alumnoId, payload);
             
             setOperationMessage({ type: 'success', message: '✅ Alumno actualizado correctamente (Datos personales, notas y asistencias).' });
             
-            // Recargar datos para reflejar los cambios en el acordeón y en la lista principal
             cargarTodosLosAlumnos();
             cargarPaginaAlumnos(currentPage);
 
@@ -175,23 +192,17 @@ export default function AlumnosPanel() {
         }
     };
     
-    // 2. Manejar la actualización solo de notas/asistencias (Compartido)
-    // Aunque el Admin llama a 'handleActualizarAlumnoCompleto', AlumnoAcordeon.jsx
-    // también tiene un flujo de guardado que podría caer aquí si no está en modo Admin.
-    // En este contexto (AlumnosPanel para Admin), este handler es redundante pero necesario
-    // para cumplir con la interfaz del AlumnoAcordeon si es usado internamente.
-    // Usaremos la misma lógica que el completo, pero asumiendo que solo se enviaron las materias.
+    // 2. Manejar la actualización solo de notas/asistencias
     const handleGuardarCambios = async (materiaConCambios) => {
         
-        // Buscamos el alumno completo de la página actual para obtener el ID y el DNI
         const alumnoAActualizar = alumnosFiltradosPagina.find(a => a._id === openedAlumno);
         if (!alumnoAActualizar) return;
 
         setOperationMessage({ type: 'info', message: 'Guardando notas/asistencias...' });
         try {
             const payload = { 
-                nombre: alumnoAActualizar.nombre, // Mantener datos
-                dni: alumnoAActualizar.dni,     // Mantener datos
+                nombre: alumnoAActualizar.nombre,
+                dni: alumnoAActualizar.dni,
                 materias: [materiaConCambios]
             };
             
@@ -199,7 +210,6 @@ export default function AlumnosPanel() {
             
             setOperationMessage({ type: 'success', message: '✅ Notas y asistencias actualizadas correctamente.' });
             
-            // Recargar datos para reflejar los cambios en el acordeón y en la lista principal
             cargarTodosLosAlumnos();
             cargarPaginaAlumnos(currentPage);
 
@@ -217,9 +227,8 @@ export default function AlumnosPanel() {
             await deleteAlumno(alumnoId);
             
             setOperationMessage({ type: 'success', message: `🗑️ Alumno ${alumnoId} eliminado correctamente.` });
-            setOpenedAlumno(null); // Cerrar el acordeón del alumno eliminado
+            setOpenedAlumno(null);
             
-            // Recargar la página y la lista completa
             cargarTodosLosAlumnos();
             cargarPaginaAlumnos(currentPage);
 
@@ -265,7 +274,7 @@ export default function AlumnosPanel() {
                     onSuccess={handleSuccessCrearAlumno}
                 />
 
-                {/* 🆕 Mensaje de Operación (Actualizar/Eliminar) */}
+                {/* Mensaje de Operación (Actualizar/Eliminar) */}
                 {operationMessage.message && (
                     <div className={`notification-box ${getNotificationClass(operationMessage.type)}`}>
                         {operationMessage.message}
@@ -285,9 +294,6 @@ export default function AlumnosPanel() {
                         <AlumnoAcordeon
                             key={alumno._id}
                             alumno={alumno}
-                            // Asume que la estructura de materiasDelAlumno está dentro del objeto 'alumno' o se obtiene de otra forma.
-                            // Si el servicio getAlumnoById/getAlumnoByDni no incluye materias, se deberá hacer un fetch adicional.
-                            // Para simplificar, asumiremos que alumno.materias contiene la estructura esperada:
                             materiasDelAlumno={alumno.materias} 
                             isOpen={openedAlumno === alumno._id}
                             onToggle={() =>
@@ -295,12 +301,9 @@ export default function AlumnosPanel() {
                                     prev === alumno._id ? null : alumno._id
                                 )
                             }
-                            // 🆕 Props específicos del Administrador
                             userRole={userRole} 
                             onActualizarAlumnoCompleto={handleActualizarAlumnoCompleto}
                             onEliminarAlumno={handleEliminarAlumno}
-                            
-                            // 🆕 Prop de notas/asistencias (necesario para el componente)
                             onGuardarCambios={handleGuardarCambios}
                         />
                     ))}

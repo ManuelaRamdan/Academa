@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { profeGetMiInfo } from "../../services/profesorService";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/PanelComun.css";
 import "../../styles/PanelProfesor.css";
 import AlumnoAcordeon from "../../components/AlumnoAcordeon";
 
@@ -119,7 +120,7 @@ export default function ProfesorPanel() {
         <>
             <button className="hamburger" onClick={toggleMenu}>☰</button>
 
-            <div className="padre-layout">
+            <div className="layout-base">
 
                 {/* SIDEBAR */}
                 <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>

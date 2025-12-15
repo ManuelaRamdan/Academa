@@ -1,0 +1,136 @@
+@import "./color.css";
+/* Importa los estilos base de inputs, botones y utilidades generales */
+@import "./styles.css";
+
+/* ============================
+   LAYOUT GENERAL (Unificado)
+============================ */
+/* Sustituye .padre-layout y .admin-layout */
+.layout-base {
+    display: flex;
+    height: 100vh;
+    background: var(--color1);
+}
+
+/* ============================
+   SIDEBAR (Unificado)
+============================ */
+.sidebar {
+    width: 270px;
+    background: var(--color5);
+    color: white;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-right: 3px solid var(--color2);
+}
+
+.sidebar-title {
+    /* Mantener estilo del padre: color1 en background oscuro */
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    color: var(--color1); 
+}
+
+.sidebar-btn {
+    padding: 14px;
+    background: var(--color2);
+    border-radius: 12px;
+    color: var(--color5);
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.sidebar-btn:hover {
+    background: var(--color3);
+}
+
+.sidebar-btn.active {
+    background: var(--color4);
+    color: white;
+    font-weight: 700;
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding: 14px;
+    background: var(--color3);
+    color: var(--color5);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.logout-btn:hover {
+    background: var(--color4);
+    color: white;
+}
+
+/* ============================
+   CONTENT (Unificado)
+============================ */
+.content {
+    flex: 1;
+    padding: 45px;
+    overflow-y: auto;
+}
+
+/* ============================
+   COMPONENTES BASE (Unificado)
+============================ */
+.seccion-titulo {
+    margin-top: 25px;
+    font-size: 24px;
+    color: var(--color3);
+}
+
+
+/* ============================
+   ESTADOS (Unificado)
+============================ */
+.loading {
+    font-size: 22px;
+}
+
+.error {
+    color: #c62828; /* Usamos el rojo del msg-error para consistencia */
+    font-size: 18px;
+}
+
+/* ============================
+    MOBILE / HAMBURGUESA (Unificado)
+    Las media queries de styles.css se encargan de ocultar/mostrar
+    y manejar el desplazamiento de .sidebar.
+============================ */
+/* El estilo de .hamburger viene de styles.css */
+
+/* Ajuste del sidebar para override en móvil */
+@media (max-width: 900px) {
+    .sidebar {
+        /* Reafirmar la posición fija y oculta por defecto en móvil */
+        position: fixed;
+        top: 0;
+        left: -270px;
+        height: 100vh;
+        z-index: 1500;
+        transition: left 0.35s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .content {
+        padding: 30px;
+        margin-top: 60px;
+        width: 100%;
+    }
+}

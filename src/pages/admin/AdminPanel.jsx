@@ -1,6 +1,7 @@
 // src/pages/Admin/AdminPanel.jsx
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/PanelComun.css";
 import "../../styles/PanelAdmin.css";
 import UsuariosPanel from "../../components/admin/usuarios/UsuarioPanel";
 import MateriasPanel from "../../components/admin/materia/MateriaPanel";
@@ -61,9 +62,8 @@ export default function AdminPanel() {
             {/* BOTÓN HAMBURGUESA */}
             <button className="hamburger" onClick={toggleMenu}>☰</button>
 
-            <div className="admin-layout"> {/* CLASE PRINCIPAL: admin-layout */}
+            <div className="layout-base"> 
 
-                {/* SIDEBAR */}
                 <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
                     <h2 className="sidebar-title">Panel Admin</h2>
 
