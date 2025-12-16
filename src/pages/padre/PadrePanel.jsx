@@ -5,98 +5,98 @@ import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelComun.css";
 import "../../styles/PanelPadre.css";
 import AlumnoInfo from "../../components/AlumnoInfo";
+import Loading from "../../components/Loading";
 
 export default function PadrePanel() {
-    const { logout } = useAuth();
+  const { logout } = useAuth();
 
-    const [hijos, setHijos] = useState([]);
-    const [alumno, setAlumno] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [hijoSeleccionado, setHijoSeleccionado] = useState(null);
+  const [hijos, setHijos] = useState([]);
+  const [alumno, setAlumno] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [hijoSeleccionado, setHijoSeleccionado] = useState(null);
 
-const [menuAbierto, setMenuAbierto] = useState(false);
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
-const toggleMenu = () => {
-    setMenuAbierto(prev => !prev);
-};
+  const toggleMenu = () => {
+    setMenuAbierto((prev) => !prev);
+  };
 
-    useEffect(() => {
-        const cargar = async () => {
-            try {
-                const res = await getHijosPadre();
-                setHijos(res.data.hijos);
+  useEffect(() => {
+    const cargar = async () => {
+      try {
+        const res = await getHijosPadre();
+        setHijos(res.data.hijos);
 
-                if (res.data.hijos.length > 0) {
-                    seleccionarHijo(res.data.hijos[0].id);
-                }
-            } catch {
-                setError("No se pudieron cargar los hijos");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        cargar();
-    }, []);
-
-    const seleccionarHijo = async (id) => {
-        try {
-            setLoading(true);
-            setHijoSeleccionado(id);
-            const res = await getAlumnoById(id);
-            setAlumno(res.data);
-        } catch {
-            setError("Error al cargar datos del alumno");
-        } finally {
-            setLoading(false);
+        if (res.data.hijos.length > 0) {
+          seleccionarHijo(res.data.hijos[0].id);
         }
+      } catch {
+        setError("No se pudieron cargar los hijos");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // AHORA SÍ, YA ESTÁN TODOS LOS HOOKS DEFINIDOS:
-    if (loading && !alumno) return <h2 className="loading">Cargando...</h2>;
-    if (error) return <p className="error">{error}</p>;
+    cargar();
+  }, []);
 
+  const seleccionarHijo = async (id) => {
+    try {
+      setLoading(true);
+      setHijoSeleccionado(id);
+      const res = await getAlumnoById(id);
+      setAlumno(res.data);
+    } catch {
+      setError("Error al cargar datos del alumno");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  if (loading && !alumno) return <Loading fullScreen />;
+  if (error) return <p className="error">{error}</p>;
 
-    return (
-        <>
-            {/* BOTÓN HAMBURGUESA */}
-            <button className="hamburger" onClick={toggleMenu}>☰</button>
+  return (
+    <>
+      {/* BOTÓN HAMBURGUESA */}
+      <button className="hamburger" onClick={toggleMenu}>
+        ☰
+      </button>
 
-            <div className="layout-base">
+      <div className="layout-base">
+        {/* SIDEBAR */}
+        <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
+          <h2 className="sidebar-title">Mis Hijos</h2>
 
-                {/* SIDEBAR */}
-                <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
-                    <h2 className="sidebar-title">Mis Hijos</h2>
+          {hijos.map((h) => (
+            <button
+              key={h.id}
+              onClick={() => seleccionarHijo(h.id)}
+              className={`sidebar-btn ${
+                hijoSeleccionado === h.id ? "active" : ""
+              }`}
+            >
+              {h.nombre}
+            </button>
+          ))}
 
-                    {hijos.map(h => (
-                        <button
-                            key={h.id}
-                            onClick={() => seleccionarHijo(h.id)}
-                            className={`sidebar-btn ${hijoSeleccionado === h.id ? "active" : ""}`}
-                        >
-                            {h.nombre}
-                        </button>
-                    ))}
+          <button onClick={logout} className="logout-btn">
+            Cerrar sesión
+          </button>
+        </aside>
 
-                    <button onClick={logout} className="logout-btn">
-                        Cerrar sesión
-                    </button>
-                </aside>
-
-                {/* CONTENIDO */}
-                <main className="content">
-                    {loading ? (
-                        <h2 className="loading">Cargando datos del alumno...</h2>
-                    ) : alumno ? (
-                        <AlumnoInfo alumno={alumno} />
-                    ) : (
-                        <p>No se encontró información del alumno.</p>
-                    )}
-                </main>
-            </div>
-        </>
-    );
-
+        {/* CONTENIDO */}
+        <main className="content">
+          {loading ? (
+            <Loading />
+          ) : alumno ? (
+            <AlumnoInfo alumno={alumno} />
+          ) : (
+            <p>No se encontró información del alumno.</p>
+          )}
+        </main>
+      </div>
+    </>
+  );
 }

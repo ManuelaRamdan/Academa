@@ -12,6 +12,7 @@ function AppRouter() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
                 {/* RUTA ADMIN */}
                 <Route

@@ -6,7 +6,7 @@ export default function UsuarioAcordeon({ user, isOpen, onToggle }) {
                 className={`usuario-header-card ${isOpen ? "open" : ""}`}
                 onClick={onToggle}
             >
-                <strong>{user.nombre}</strong>
+                {user.nombre}
                 <span className="toggle-icon">{isOpen ? "▼" : "▲"}</span>
             </div>
 
