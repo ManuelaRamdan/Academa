@@ -1,18 +1,68 @@
-# React + Vite
+# Academa Frontend - Sistema de Gestión Escolar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Proyecto Fronted para la aplicacion Academa, diseñado para facilitar la gestión de notas y asistencias. Está construido utilizando React y Vite, consumiendo la API desarrollada en el stack MERN.
 
-Currently, two official plugins are available:
+## ⚙️ Configuración del entorno
+### 1. Software necesario
+Para correr el proyecto se necesita tener instalado:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* Node.js (recomendado v18 o superior)
+* npm (gestor de paquetes)
+* Git (opcional, para clonar el repositorio)
 
-## React Compiler
+### 2. Instalación del proyecto
+- Clonar el repositorio:
+```text
+git clone https://github.com/ManuelaRamdan/Academa.git
+```
+- Acceder a la carpeta del proyecto:
+```text
+cd academa
+```
+- Instalar las dependencias:
+```text
+npm install
+```
+### 3. Variables de entorno
+```text
+VITE_API_URL=http://localhost:3000
+```
+### 4. Modos de ejecución
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Modo desarrollo :
+```text
+npm run dev
+```
 
-Note: This will impact Vite dev & build performances.
+## Estructura del proyecto
+```text
+📦 academa
+├── 📁 public             # Archivos estáticos (Logo, iconos)
+├── 📁 src
+│   ├── 📁 components     # Componentes reutilizables (Admin, AlumnoAcordeon, etc.)
+│   ├── 📁 context        # Gestión del estado global (Autenticación)
+│   ├── 📁 pages          # Vistas principales divididas por roles (Admin, Padre, Profesor)
+│   ├── 📁 router         # Configuración de rutas con React Router
+│   ├── 📁 services       # Llamadas a la API mediante Axios
+│   ├── 📁 styles         # Archivos de estilos CSS
+│   ├── App.jsx           # Componente raíz
+│   └── main.jsx          # Punto de entrada de la aplicación
+├── .env                  # Variables de entorno
+├── eslint.config.js      # Configuración de linter
+├── index.html            # Plantilla HTML principal
+├── package.json          # Scripts y dependencias
+└── vite.config.js        # Configuración de Vite
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+
+## Librerías Utilizadas
+
+| Librería               | Propósito                                                                 |
+|------------------------|---------------------------------------------------------------------------|
+| **React 19**           | Biblioteca principal para construir la interfaz de usuario basada en componentes. |
+| **Vite**               | Herramienta de construcción (build tool) ultra rápida para el desarrollo frontend. |
+| **Axios**              | Cliente HTTP para realizar peticiones a la API del backend.               |
+| **React Router Dom**   | Gestión de la navegación y rutas dinámicas de la aplicación.              |
+| **React Icons**        | Set de iconos vectoriales para mejorar la experiencia visual.             |
+| **React Loader Spinner** | Componentes de carga (spinners) para mejorar el feedback visual durante procesos asíncronos. |
