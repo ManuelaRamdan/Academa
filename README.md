@@ -61,7 +61,7 @@ npm run dev
 | Librería               | Propósito                                                                 |
 |------------------------|---------------------------------------------------------------------------|
 | **React 19**           | Biblioteca principal para construir la interfaz de usuario basada en componentes. |
-| **Vite**               | Herramienta de construcción (build tool) ultra rápida para el desarrollo frontend. |
+| **Vite**               | Herramienta de construcción rápida para el desarrollo frontend. |
 | **Axios**              | Cliente HTTP para realizar peticiones a la API del backend.               |
 | **React Router Dom**   | Gestión de la navegación y rutas dinámicas de la aplicación.              |
 | **React Icons**        | Set de iconos vectoriales para mejorar la experiencia visual.             |
