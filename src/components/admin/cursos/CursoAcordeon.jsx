@@ -6,7 +6,7 @@ import React from 'react';
 export default function CursoAcordeon({ curso, isOpen, onToggle }) {
 
     // Nombre visible en el header
-    const cursoNombreVisible = `${curso.nombreMateria} - ${curso.division} (${curso.anio})`;
+    const cursoNombreVisible = `${curso.nombreMateria} - ${curso.nivel} ${curso.division} (${curso.anio})`;
 
     // Número total de alumnos
     const totalAlumnos = curso.alumnos ? curso.alumnos.length : 0;
