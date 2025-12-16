@@ -1,11 +1,5 @@
 import { TailSpin } from "react-loader-spinner";
 
-/**
- * Props:
- * - size: número (px)
- * - color: string (color CSS)
- * - fullScreen: boolean
- */
 export default function Loading({
     size = 40,
     color = "#259073",
@@ -20,17 +14,16 @@ export default function Loading({
         />
     );
 
-    if (fullScreen) {
-        return (
-            <div className="loading-fullscreen">
-                {spinner}
-            </div>
-        );
-    }
+    const containerClass = fullScreen ? "loading-fullscreen" : "loading-container";
 
     return (
-        <div className="loading-container">
-            {spinner}
+        <div className={containerClass}>
+            <TailSpin
+                height={size}
+                width={size}
+                color={color}
+                ariaLabel="loading"
+            />
         </div>
     );
 }

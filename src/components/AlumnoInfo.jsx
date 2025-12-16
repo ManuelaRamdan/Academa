@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function AlumnoInfo({ alumno }) {
     const [abierto, setAbierto] = useState(null);
-    const [filtroMateria, setFiltroMateria] = useState(""); // <-- ✔ buscador
+    const [filtroMateria, setFiltroMateria] = useState(""); 
 
     const getFixedDateDisplay = (isoDate) => {
         if (!isoDate) return '';
@@ -15,7 +15,6 @@ export default function AlumnoInfo({ alumno }) {
         return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
     };
 
-    // ✔ Filtrar materias según el texto buscado
     const materiasFiltradas = alumno.materias?.filter(m =>
         `${m.nombreCurso} ${m.nivel}${m.division} ${m.anio}`
             .toLowerCase()
@@ -29,7 +28,7 @@ export default function AlumnoInfo({ alumno }) {
 
             <h2 className="seccion-titulo">Materias</h2>
 
-            {/* 🔎 BUSCADOR DE MATERIAS — justo debajo del título */}
+
             <input
                 type="text"
                 className="buscar-materia"

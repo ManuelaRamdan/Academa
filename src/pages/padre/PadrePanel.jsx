@@ -59,13 +59,12 @@ export default function PadrePanel() {
 
   return (
     <>
-      {/* BOTÓN HAMBURGUESA */}
       <button className="hamburger" onClick={toggleMenu}>
         ☰
       </button>
 
       <div className="layout-base">
-        {/* SIDEBAR */}
+
         <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
           <h2 className="sidebar-title">Mis Hijos</h2>
 
@@ -85,8 +84,7 @@ export default function PadrePanel() {
             Cerrar sesión
           </button>
         </aside>
-
-        {/* CONTENIDO */}
+        
         <main className="content">
           {loading ? (
             <Loading />

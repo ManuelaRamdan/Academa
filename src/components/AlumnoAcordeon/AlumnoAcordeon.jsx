@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-// Importamos los componentes hijos que deben estar en el mismo directorio
 import AlumnoHeader from "./AlumnoHeader";
 import AlumnoDatosPersonales from "./AlumnoDatosPersonales";
 import AlumnoMateria from "./AlumnoMateria";
-import { FaEdit, FaTrashAlt } from "react-icons/fa"; // Solo para referencia de iconos
+import { FaEdit, FaTrashAlt } from "react-icons/fa"; 
 
-// === ENUMS Y HELPERS (DEBEN ESTAR AL INICIO DEL ARCHIVO) ===
 const ASISTENCIA_ENUM = {
     PRESENTE: 'Presente',
     AUSENTE: 'Ausente',
@@ -29,7 +27,6 @@ const getDatetimeLocalValue = (isoDate) => {
     const offset = date.getTimezoneOffset() * 60000;
     return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
-// === FIN ENUMS Y HELPERS ===
 
 
 export default function AlumnoAcordeon({
@@ -40,7 +37,7 @@ export default function AlumnoAcordeon({
     onGuardarCambios,
     userRole,
     onActualizarAlumnoCompleto,
-    onEliminarAlumno, // ESTA FUNCIÓN RECIBE EL ID DEL ALUMNO
+    onEliminarAlumno, 
 }) {
     const notificationRef = useRef(null);
     const modalRef = useRef(null);
@@ -66,9 +63,7 @@ export default function AlumnoAcordeon({
 
     const isEditingMateria = materiaEditandoId !== null;
 
-    /* =========================
-       SINCRONIZACIÓN Y SCROLL (SIN CAMBIOS)
-    ========================= */
+
     useEffect(() => {
         setAlumnoEditado({
             nombre: alumno?.nombre || '',
@@ -92,15 +87,10 @@ export default function AlumnoAcordeon({
     }, [confirmDelete.isActive]);
 
 
-    /* =========================
-       FUNCIONES DE ESTADO INTERNO (Notas/Asistencias)
-       Estas funciones deben estar aquí para manejar setMaterias
-    ========================= */
-    
-    // Función que inicia la edición de una materia (resuelve el ReferenceError)
+
     const iniciarEdicionMateria = (idCurso) => {
         if (alumnoEditado.editandoDatosPersonales) {
-            setNotificationMessage({ type: 'warning', message: '⚠️ Primero debe Guardar o Cancelar la edición de los Datos Personales.' });
+            setNotificationMessage({ type: 'warning', message: 'Primero debe Guardar o Cancelar la edición de los Datos Personales.' });
             return;
         }
         setMateriaEditandoId(idCurso);
@@ -185,7 +175,7 @@ export default function AlumnoAcordeon({
                     if (yaExiste) {
                         setNotificationMessage({
                             type: 'error',
-                            message: `❌ Error: Ya existe una asistencia registrada para el día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]}.`
+                            message: `Error: Ya existe una asistencia registrada para el día ${getFixedDateDisplay(nuevaFechaISO).split(' ')[0]}.`
                         });
                         return m;
                     }
@@ -207,7 +197,7 @@ export default function AlumnoAcordeon({
         const fechaSeleccionada = new Date(nuevaFechaHoraString);
         const hoy = new Date();
         if (fechaSeleccionada.getTime() > hoy.getTime()) {
-            setNotificationMessage({ type: 'error', message: '❌ Error: No puedes registrar asistencias en el futuro.' });
+            setNotificationMessage({ type: 'error', message: 'Error: No puedes registrar asistencias en el futuro.' });
             return;
         }
         const nuevaFechaISO = fechaSeleccionada.toISOString();
@@ -245,12 +235,9 @@ export default function AlumnoAcordeon({
         );
     };
 
-    /* =========================
-       HANDLERS DE CONFIRMACIÓN Y ELIMINACIÓN
-    ========================= */
     const iniciarEdicionDatosPersonales = () => {
         if (isEditingMateria) {
-            setNotificationMessage({ type: 'warning', message: '⚠️ Primero debe Guardar o Cancelar la edición de la materia actual.' });
+            setNotificationMessage({ type: 'warning', message: 'Primero debe Guardar o Cancelar la edición de la materia actual.' });
             return;
         }
         setAlumnoEditado(prev => ({ ...prev, editandoDatosPersonales: true }));
@@ -270,7 +257,7 @@ export default function AlumnoAcordeon({
         if (!alumnoEditado.nombre.trim() || !alumnoEditado.dni.trim()) {
             setNotificationMessage({
                 type: 'error',
-                message: '❌ Error: El nombre y DNI del alumno no pueden estar vacíos.'
+                message: 'Error: El nombre y DNI del alumno no pueden estar vacíos.'
             });
             return;
         }
@@ -284,7 +271,7 @@ export default function AlumnoAcordeon({
             materias,
         });
         setAlumnoEditado(prev => ({ ...prev, editandoDatosPersonales: false }));
-        setNotificationMessage({ type: 'success', message: '✅ Datos personales actualizados correctamente.' });
+        setNotificationMessage({ type: 'success', message: 'Datos personales actualizados correctamente.' });
     };
 
     const iniciarEliminacionAlumno = () => {
@@ -300,7 +287,6 @@ export default function AlumnoAcordeon({
 
     const ejecutarEliminacionAlumno = () => {
         if (onEliminarAlumno) {
-            // ✅ CORRECCIÓN FINAL: Aseguramos que solo pasamos el ID.
             onEliminarAlumno(alumno._id);
             setConfirmDelete({ isActive: false, idCurso: null, itemType: null, index: null, itemName: '' });
             setAlumnoEditado(prev => ({ ...prev, editandoDatosPersonales: false }));
@@ -377,11 +363,11 @@ export default function AlumnoAcordeon({
         });
 
         if (tipoVacioEncontrado) {
-            setNotificationMessage({ type: 'error', message: '❌ Error: El campo "Tipo" de una o más notas está vacío.' });
+            setNotificationMessage({ type: 'error', message: 'Error: El campo "Tipo" de una o más notas está vacío.' });
             return { error: true };
         }
         if (hayErrorAsistenciaDuplicada) {
-            setNotificationMessage({ type: 'error', message: '❌ Error: No se puede guardar, existe una asistencia duplicada en el mismo día.' });
+            setNotificationMessage({ type: 'error', message: 'Error: No se puede guardar, existe una asistencia duplicada en el mismo día.' });
             return { error: true };
         }
         return { materiasAEnviar, hayErrorRango };
@@ -414,11 +400,10 @@ export default function AlumnoAcordeon({
             onGuardarCambios(materiaActualizada);
         }
 
-        // Mostrar notificación de éxito/advertencia
         if (hayErrorRango) {
-            setNotificationMessage({ type: 'warning', message: '⚠️ Se corrigieron automáticamente notas fuera del rango (1-10).' });
+            setNotificationMessage({ type: 'warning', message: 'Se corrigieron automáticamente notas fuera del rango (1-10).' });
         } else {
-            setNotificationMessage({ type: 'success', message: '✅ Cambios de materia guardados correctamente!' });
+            setNotificationMessage({ type: 'success', message: 'Cambios de materia guardados correctamente!' });
         }
     };
 
@@ -436,7 +421,6 @@ export default function AlumnoAcordeon({
     return (
         <div className="acordeon-alumno">
 
-            {/* MODAL DE CONFIRMACIÓN */}
             {confirmDelete.isActive && (
                 <div className="modal-confirmacion-overlay">
                     <div className="modal-confirmacion-box" ref={modalRef}>
@@ -459,9 +443,7 @@ export default function AlumnoAcordeon({
                     </div>
                 </div>
             )}
-            {/* FIN MODAL DE CONFIRMACIÓN */}
 
-            {/* HEADER */}
             <AlumnoHeader
                 nombre={alumno?.nombre}
                 isOpen={isOpen}
@@ -471,7 +453,6 @@ export default function AlumnoAcordeon({
             {isOpen && (
                 <div className="acordeon-body">
 
-                    {/* NOTIFICACIÓN */}
                     <div ref={notificationRef}>
                         {notificationMessage.message && (
                             <div className={`notification-box ${getNotificationClass(notificationMessage.type)}`}>
@@ -480,7 +461,6 @@ export default function AlumnoAcordeon({
                         )}
                     </div>
 
-                    {/* DATOS PERSONALES */}
                     {userRole === 'ADMIN' && (
                         <div className={`admin-actions-personal ${alumnoEditado.editandoDatosPersonales ? 'is-editing' : ''}`}>
                             <AlumnoDatosPersonales
@@ -503,13 +483,12 @@ export default function AlumnoAcordeon({
                         </div>
                     )}
 
-                    {/* MATERIAS */}
                     {materias.map(materia => (
                         <AlumnoMateria
                             key={materia.idCurso}
                             materia={materia}
                             isEditing={materia.idCurso === materiaEditandoId}
-                            setEditing={() => iniciarEdicionMateria(materia.idCurso)} // ✅ LLAMADA CORRECTA AL HANDLER
+                            setEditing={() => iniciarEdicionMateria(materia.idCurso)} 
                             cancelarEdicion={() => handleCancelarMateria(materia.idCurso)}
                             userRole={userRole}
                             ASISTENCIA_ENUM={ASISTENCIA_ENUM}
@@ -518,7 +497,6 @@ export default function AlumnoAcordeon({
                             getDatetimeLocalValue={getDatetimeLocalValue}
                             onGuardar={(m) => handleGuardarMateria(m.idCurso)}
 
-                            // Pasamos los handlers de CAMBIO DE ESTADO
                             handleCambioNota={handleCambioNota}
                             handleAgregarNota={handleAgregarNota}
                             handleCambioAsistencia={handleCambioAsistencia}

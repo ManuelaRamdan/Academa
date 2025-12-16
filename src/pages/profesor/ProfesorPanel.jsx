@@ -79,7 +79,6 @@ export default function ProfesorPanel() {
       const res = await actualizarNotas(dni, [materiaNormalizada]);
       const dataGuardada = res.data ?? res;
 
-      // === ACTUALIZAR ALUMNOS EN EL ESTADO ===
       setAlumnos((prev) =>
         prev.map((al) =>
           al.dni === dni
@@ -91,8 +90,6 @@ export default function ProfesorPanel() {
             : al
         )
       );
-
-      // === ACTUALIZAR MATERIAS DEL PROFESOR ===
       setMaterias((prevMaterias) =>
         prevMaterias.map((mat) => {
           if (mat._id === materiaSeleccionada._id) {
@@ -124,7 +121,7 @@ export default function ProfesorPanel() {
       </button>
 
       <div className="layout-base">
-        {/* SIDEBAR */}
+
         <aside className={`sidebar ${menuAbierto ? "open" : ""}`}>
           <h2 className="sidebar-title">Mis materias</h2>
 
@@ -161,19 +158,15 @@ export default function ProfesorPanel() {
           </button>
         </aside>
 
-        {/* CONTENIDO */}
         <main className="content">
           {materiaSeleccionada ? (
             <div className="materia-card">
-              {/* === NOMBRE DEL PROFESOR === */}
               <h1 className="profe-nombre">{profesor.nombre}</h1>
-              {/* Usamos un subtítulo de sección para el nombre de la materia */}
               <h2 className="seccion-titulo">
                 {materiaSeleccionada.nombreMateria} {materiaSeleccionada.nivel}
                 {materiaSeleccionada.division} {materiaSeleccionada.anio}
               </h2>
 
-              {/* === BUSCADOR DE ALUMNO === */}
               <input
                 type="text"
                 className="buscar-alumno"
@@ -182,7 +175,6 @@ export default function ProfesorPanel() {
                 onChange={(e) => setFiltroAlumno(e.target.value)}
               />
 
-              {/* === ACORDEONES === */}
               {alumnos
                 .filter((al) =>
                   al.nombre.toLowerCase().includes(filtroAlumno.toLowerCase())

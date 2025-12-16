@@ -1,6 +1,5 @@
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-// Helper para el display de asistencias (lo movimos del acordeón viejo)
 const getAsistenciaDisplay = (value, ASISTENCIA_ENUM) => {
     switch (value) {
         case ASISTENCIA_ENUM.PRESENTE: return 'Presente';
@@ -20,7 +19,6 @@ export default function AlumnoMateria({
     userRole,
     ASISTENCIA_ENUM,
 
-    // Funciones de manejo de estado y helpers pasadas desde AlumnoAcordeon
     handleCambioNota,
     handleAgregarNota,
     handleCambioAsistencia,
@@ -33,7 +31,6 @@ export default function AlumnoMateria({
     return (
         <div className={`materia-bloque ${isEditing ? "is-editing-materia" : ""}`}>
             <div className="materia-titulo">
-                {/* Título de materia/curso */}
                 <h3 className="materia-curso-info">
                     {materia.nombreCurso} ({materia.nivel}{materia.division})
                 </h3>
@@ -48,9 +45,7 @@ export default function AlumnoMateria({
                 )}
             </div>
 
-            {/* =======================
-                 1. SECCIÓN NOTAS
-                 ======================= */}
+
             <h3>Notas</h3>
 
             {isEditing && (
@@ -121,9 +116,6 @@ export default function AlumnoMateria({
                 <p>No tiene notas cargadas</p>
             )}
 
-            {/* =======================
-                 2. SECCIÓN ASISTENCIAS
-                 ======================= */}
             <h3>Asistencias</h3>
 
             {isEditing && (
@@ -149,7 +141,7 @@ export default function AlumnoMateria({
                             {materia.asistencias.map((a, index) => (
                                 <tr key={a._id || index}>
                                     <td>
-                                        {/* INPUT FECHA/HORA */}
+                                        
                                         {isEditing ? (
                                             <input
                                                 className="input-tabla"
@@ -163,7 +155,7 @@ export default function AlumnoMateria({
                                         )}
                                     </td>
                                     <td>
-                                        {/* SELECT PRESENTE/AUSENTE */}
+                                        
                                         {isEditing ? (
                                             <select
                                                 className="input-tabla"

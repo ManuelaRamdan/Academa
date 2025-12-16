@@ -49,7 +49,6 @@ export default function AlumnoDatosPersonales({
                 )}
             </div>
 
-            {/* CLASE CORREGIDA: Usa alumno-id para forzar la ruptura del ID largo */}
             <p className="usuario-body-details"> 
                 <strong>ID:</strong>
                 <span>{alumno._id}</span>

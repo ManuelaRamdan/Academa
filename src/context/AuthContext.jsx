@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const t = localStorage.getItem("token");
@@ -16,6 +17,8 @@ export function AuthProvider({ children }) {
             setToken(t);
             setUser(JSON.parse(u));
         }
+
+        setLoading(false);
     }, []);
 
     const login = (token, usuario) => {
@@ -27,7 +30,7 @@ export function AuthProvider({ children }) {
 
         setToken(token);
         setUser(usuario);
-        setSessionExpired(false); // 🔹 importante
+        setSessionExpired(false); 
     };
 
     const logout = (expired = false) => {
@@ -38,7 +41,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("token");
         localStorage.removeItem("usuario");
 
-        if (!expired) { // Solo si no fue un logout por expiración (automático)
+        if (!expired) { 
             localStorage.setItem("MANUAL_LOGOUT", "true");
         }
     };
@@ -51,6 +54,7 @@ export function AuthProvider({ children }) {
                 login,
                 logout,
                 sessionExpired,
+                loading
             }}
         >
             {children}
