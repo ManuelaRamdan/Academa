@@ -353,3 +353,155 @@
     /* Espacio entre el nombre y el icono de toggle */
     margin-right: 10px; 
 }
+
+.admin-actions-personal {
+    max-width: 100%;
+        min-width: 0;
+}
+
+.admin-acciones-datos-personales {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;      /* ← CLAVE */
+    min-width: 0;
+}
+.btn-eliminar-alumno {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar el texto/icono */
+}
+
+.btn-eliminar-alumno svg {
+    margin-right: 8px;
+}
+
+.btn-eliminar-alumno:hover {
+    background-color: #d32f2f;
+}
+
+
+
+/* ✅ Media Query: Forzar apilamiento vertical en mobile */
+@media (max-width: 450px) {
+    .admin-acciones-datos-personales {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-acciones-datos-personales .btn-editar,
+    .admin-acciones-datos-personales .btn-eliminar-alumno {
+        width: 100%;
+        align-self: stretch;
+    }
+}
+
+.input-tabla {
+    /* Sobrescribir el estilo global para que sean pequeños y no tengan margen */
+    width: 100%;
+    padding: 4px 6px; 
+    margin-bottom: 0; 
+    font-size: 13px;
+    height: auto; /* Ajuste la altura automáticamente */
+    min-width: 80px; /* Asegura que el input de fecha tenga espacio */
+}
+
+/* Estilo para los botones de eliminar dentro de la tabla (íconos) */
+.btn-eliminar-tabla {
+    padding: 6px 8px; 
+    background-color: #f44336; 
+    color: white;
+    border-radius: 4px;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-eliminar-tabla:hover {
+    background-color: #d32f2f;
+}
+
+/* Asegura que la celda de acción sea estrecha */
+.th-accion, .td-accion {
+    width: 1px; /* Hace que la columna sea lo más pequeña posible */
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Estilo para el contenedor de título de materia en AlumnoMateria */
+.materia-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* PanelAdmin.css - AÑADIR/MODIFICAR ESTOS BLOQUES */
+
+/* --- SECCIÓN GLOBAL DE IDS LARGOS --- */
+/* Esta regla es clave para que los IDs de MongoDB (en Alumno, Profesor, Curso) no rompan el layout en móvil. */
+.admin-long-id-info {
+    font-size: 14px;
+    color: #666; /* Un color discreto para el ID */
+    margin-top: 10px;
+    
+    /* 🔑 CLAVE: FUERZA LA RUPTURA DEL TEXTO LARGO */
+    word-break: break-all; 
+    overflow-wrap: break-word;
+}
+
+.admin-long-id-info span {
+    display: block;
+    font-family: monospace;
+    margin-top: 4px;
+}
+
+/* --- ESTILOS DE MATERIA PROFESOR (MPD) --- */
+
+.mpd-card {
+    /* Estilos base ya existentes */
+    background: var(--color3);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border: 2px solid var(--color2);
+    box-shadow: 0px 3px 10px var(--shadow);
+}
+
+.mpd-header {
+    /* ... estilos ya existentes ... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background: color-mix(in srgb, var(--color4) 35%, var(--color1));
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    color: var(--color5);
+    font-weight: 700;
+    /* ✅ Aseguramos que el header no se desborde */
+    min-width: 0;
+}
+
+.mpd-info {
+    /* Contenedor de la información general (donde están los IDs de curso) */
+    margin-bottom: 16px;
+    color: var(--color5);
+    font-size: 15px;
+    /* ✅ Habilita la ruptura de palabras aquí también, por si acaso */
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+}
+
+/* Aplicar la clase de ruptura de ID a los IDs dentro del detalle de materia (MPD) */
+.mpd-info .admin-long-id-info {
+    margin-bottom: 10px;
+}

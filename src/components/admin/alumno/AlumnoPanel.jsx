@@ -8,7 +8,7 @@ import {
 } from "../../../services/alumnoService";
 
 //import "../../../styles/PanelUsuario.css";
-import AlumnoAcordeon from "../../AlumnoAcordeon";
+import AlumnoAcordeon from "../../AlumnoAcordeon/AlumnoAcordeon";
 import CrearAlumno from "./CrearAlumno";
 import Loading from "../../Loading";
 

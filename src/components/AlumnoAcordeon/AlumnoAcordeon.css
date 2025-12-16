@@ -1,0 +1,174 @@
+/* ===============================
+   CONTENEDOR GENERAL
+================================ */
+.acordeon-alumno {
+    background: color-mix(in srgb, var(--color2) 40%, transparent);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 15px;
+    border-left: 5px solid var(--color5);
+    box-shadow: 0px 3px 12px var(--shadow-soft);
+}
+
+/* ===============================
+   HEADER
+================================ */
+.acordeon-header {
+    padding: 14px;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--color3) 40%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--color5);
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    transition: 0.25s;
+}
+
+.acordeon-header:hover {
+    background: var(--color4);
+    color: white;
+}
+
+.acordeon-nombre-usuario {
+    flex-grow: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.toggle-icon {
+    flex-shrink: 0;
+}
+
+/* ===============================
+   BODY
+================================ */
+.acordeon-body {
+    margin-top: 12px;
+    padding: 14px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--color3);
+    
+    /* ✅ AÑADE O VERIFICA: CLAVE para asegurar que los IDs rompan dentro */
+    word-break: break-all; 
+    overflow-wrap: break-word; 
+}
+
+/* ===============================
+   ADMIN – DATOS PERSONALES
+================================ */
+.admin-actions-personal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.admin-datos-header h3 {
+    margin: 0;
+    color: var(--color5);
+}
+
+.admin-acciones-datos-personales {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* 🔑 evita desbordes */
+}
+
+.btn-editar,
+.btn-guardar,
+.btn-cancelar {
+    background: var(--color3);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancelar {
+    background: var(--color2);
+    color: var(--color5);
+}
+
+.btn-eliminar-alumno {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-eliminar-alumno:hover {
+    background-color: #d32f2f;
+}
+
+/* ===============================
+   ID DEL ALUMNO (NO SE CORTA)
+================================ */
+.alumno-id {
+    font-size: 14px;
+    color: var(--color5);
+    word-break: break-all;   /* ✅ CLAVE: Permite romper la palabra larga (ID) */
+    overflow-wrap: break-word; /* Alternativa moderna */
+}
+
+.alumno-id span {
+    display: block;
+    font-family: monospace;
+    margin-top: 4px;
+}
+
+/* ===============================
+   FORM
+================================ */
+.datos-personales-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.datos-personales-form input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--color3);
+}
+
+/* ===============================
+   MATERIAS
+================================ */
+.materia-bloque {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color2) 30%, white);
+}
+
+.materia-titulo {
+    margin: 0 0 10px;
+    color: var(--color5);
+}
+
+/* ===============================
+   MOBILE FIX
+================================ */
+@media (max-width: 450px) {
+    .admin-acciones-datos-personales {
+        flex-direction: column;
+    }
+
+    .admin-acciones-datos-personales button {
+        width: 100%;
+    }
+}

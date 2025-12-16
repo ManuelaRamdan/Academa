@@ -41,7 +41,11 @@ export default function MateriaProfesorDetalle({ materiaCurso }) {
 
                     {/* INFO GENERAL */}
                     <div className="mpd-info">
-                        <p><strong>ID Curso:</strong> {materiaCurso.idCurso}</p>
+                        {/* ✅ CLASE CORREGIDA: Usa alumno-id para forzar la ruptura del ID largo */}
+                        <p className="alumno-id">
+                            <strong>ID Curso:</strong>
+                            <span>{materiaCurso.idCurso}</span>
+                        </p>
                         <p><strong>Alumnos:</strong> {materiaCurso.alumnos?.length || 0}</p>
                     </div>
 

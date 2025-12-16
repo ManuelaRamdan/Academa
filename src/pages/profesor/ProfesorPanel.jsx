@@ -3,7 +3,7 @@ import { profeGetMiInfo } from "../../services/profesorService";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/PanelComun.css";
 import "../../styles/PanelProfesor.css";
-import AlumnoAcordeon from "../../components/AlumnoAcordeon";
+import AlumnoAcordeon from "../../components/AlumnoAcordeon/AlumnoAcordeon";
 import Loading from "../../components/Loading";
 
 import { actualizarNotas } from "../../services/profesorService"; // asegurate que exista
