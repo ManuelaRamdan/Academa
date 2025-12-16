@@ -55,6 +55,8 @@
     border: 2px solid var(--color3);
     font-size: 15px;
     outline: none;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 
@@ -67,6 +69,17 @@
     margin-top: 25px;
     display: flex;
     justify-content: space-between;
+    gap: 10px;
+}
+
+/* ✅ Media Query para paginación en pantallas muy estrechas */
+@media (max-width: 350px) {
+    .admin-paginacion {
+        flex-direction: column; /* Apila los botones */
+    }
+    .btn-paginacion {
+        width: 100%; /* Ocupa todo el ancho */
+    }
 }
 
 .btn-paginacion {
@@ -108,6 +121,7 @@
     justify-content: space-between;
     align-items: center;
     transition: 0.25s;
+    min-width: 0;
 }
 
 .usuario-header-card:hover {
@@ -115,12 +129,19 @@
     color: white;
 }
 
-.usuario-body-details {
+.toggle-icon {
+    flex-shrink: 0;
+}
+.usuario-body-details,
+.mpd-body {
     margin-top: 12px;
     padding: 14px;
     background: white;
     border-radius: 12px;
     border: 1px solid var(--color3);
+    
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
 }
 
 .no-resultados {
@@ -223,13 +244,7 @@
     font-size: 18px;
 }
 
-.mpd-body {
-    padding: 16px;
-    background: white;
-    border-radius: 10px;
-    margin-top: 10px;
-    border: 1px solid var(--color4);
-}
+
 
 /* Info básica */
 .mpd-info {
@@ -301,4 +316,40 @@
     background: color-mix(in srgb, var(--color2) 35%, white);
     text-align: left;
     font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .admin-header {
+        /* Cambiamos a una disposición vertical para evitar el desborde */
+        display: flex;
+        flex-direction: column; 
+        gap: 10px; /* Espaciado entre elementos */
+        align-items: stretch; /* Ocupan todo el ancho */
+    }
+    .seccion-titulo {
+        /* En layout flex, el título no necesita grid-column */
+        font-size: 24px;
+        order: 1; /* Posiciona el título primero */
+    }
+    .btn-crear-usuario {
+        width: 100%; /* El botón ocupa todo el ancho */
+        order: 2; /* Posiciona el botón debajo del título */
+        margin-top: 10px; /* Reducimos el margen superior */
+        justify-self: stretch; /* Aseguramos que se estire */
+    }
+}
+
+.acordeon-nombre-usuario {
+    /* Ocupa el espacio restante */
+    flex-grow: 1; 
+    /* Asegura que pueda reducirse */
+    min-width: 0; 
+    /* Mantiene el texto en una sola línea */
+    white-space: nowrap; 
+    /* Oculta el texto que se desborda */
+    overflow: hidden; 
+    /* Muestra puntos suspensivos */
+    text-overflow: ellipsis; 
+    /* Espacio entre el nombre y el icono de toggle */
+    margin-right: 10px; 
 }

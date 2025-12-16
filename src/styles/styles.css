@@ -149,40 +149,31 @@ button:disabled {
 ============================ */
 @media (max-width: 900px) {
 
-    /* 1. Mantenemos el botón hamburguesa visible */
     .hamburger {
         display: flex;
     }
-    /* 2. Ocultamos la barra lateral por defecto y la ponemos en posición fija. */
     .sidebar {
         position: fixed;
         top: 0;
-        /* ANCHO FIJO: Se mantiene para que el desplazamiento sea predecible */
         width: 270px; 
-        left: -270px; /* <- Está COMPLETAMENTE fuera de la pantalla */
+        left: -270px; 
         height: 100%;
         transition: left 0.35s ease;
         z-index: 1500;
-        /* Necesario para que ocupe toda la altura */
         height: 100vh; 
     }
 
-    /* 3. Cuando se abre, la movemos a la posición 0 */
     .sidebar.open {
         left: 0;
     }
     
-    /* 4. El layout principal no debe tener padding lateral fijo. */
     .padre-layout {
-        /* Eliminamos el padding lateral forzado cuando el menú está cerrado */
         padding-left: 0; 
     }
     
-    /* 5. El contenido siempre ocupa el 100% (se superpone por el sidebar) */
     .content {
-        /* Si se ve el desborde, es porque el padding es demasiado grande */
         padding: 30px;
-        margin-top: 60px; /* Margen para que el contenido no quede debajo del botón hamburguesa */
+        margin-top: 60px; 
         width: 100%;
     }
 
@@ -198,7 +189,6 @@ button:disabled {
     margin-top: 10px;
 }
 
-/* Evita que el contenido colapse */
 .tabla-wrapper table {
     width: max-content;
     min-width: 100%;
@@ -239,8 +229,11 @@ button:disabled {
     justify-content: flex-end; 
 }
 @media (max-width: 480px) {
+    .botones-acciones {
+        justify-content: center; 
+    }
     .botones-acciones button {
-        width: 100%;        /* 👉 Se vuelven full-width */
+        width: 100%;       
         text-align: center;
     }
 }

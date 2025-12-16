@@ -72,43 +72,47 @@ export default function MateriaProfesorDetalle({ materiaCurso }) {
                                         {/* NOTAS */}
                                         <div className="mpd-section">
                                             <h4>Notas</h4>
-                                            <table className="mpd-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Tipo</th>
-                                                        <th>Nota</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {alumno.notas?.map((n) => (
-                                                        <tr key={n._id}>
-                                                            <td>{n.tipo}</td>
-                                                            <td>{n.nota}</td>
+                                            <div className="tabla-wrapper">
+                                                <table className="mpd-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Tipo</th>
+                                                            <th>Nota</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        {alumno.notas?.map((n) => (
+                                                            <tr key={n._id}>
+                                                                <td>{n.tipo}</td>
+                                                                <td>{n.nota}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
                                         {/* ASISTENCIAS */}
                                         <div className="mpd-section">
                                             <h4>Asistencias</h4>
-                                            <table className="mpd-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Fecha</th>
-                                                        <th>Estado</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {alumno.asistencias?.map((a) => (
-                                                        <tr key={a._id}>
-                                                            <td>{getFixedDateDisplay(a.fecha)}</td>
-                                                            <td>{a.presente}</td>
+                                            <div className="tabla-wrapper">
+                                                <table className="mpd-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fecha</th>
+                                                            <th>Estado</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        {alumno.asistencias?.map((a) => (
+                                                            <tr key={a._id}>
+                                                                <td>{getFixedDateDisplay(a.fecha)}</td>
+                                                                <td>{a.presente}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
                                     </div>

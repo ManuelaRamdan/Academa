@@ -6,18 +6,20 @@ export default function UsuarioAcordeon({ user, isOpen, onToggle }) {
                 className={`usuario-header-card ${isOpen ? "open" : ""}`}
                 onClick={onToggle}
             >
-                {user.nombre}
+                <span className="acordeon-nombre-usuario">
+                    {user.nombre}
+                </span>
                 <span className="toggle-icon">{isOpen ? "▼" : "▲"}</span>
             </div>
 
             {isOpen && (
                 <div className="usuario-body-details">
-                    <p><strong>ID Usuario:</strong> {user._id}</p>
+                    <p><strong>ID Usuario:</strong> <span> {user._id}</span></p>
                     <p><strong>Email:</strong> {user.email}</p>
                     <p><strong>Rol:</strong> {user.rol}</p>
 
                     {user.profesorId && (
-                        <p><strong>ID Profesor:</strong> {user.profesorId}</p>
+                        <p><strong>ID Profesor:</strong> <span> {user.profesorId}</span></p>
                     )}
 
                     <div className="detalle-hijos">
