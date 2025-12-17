@@ -120,7 +120,6 @@ export default function CursoPanel() {
         if (!resultados || resultados.length === 0) {
           try {
             const responseProfe = await getCursoByIdProfe(t);
-            console.log(responseProfe);
             // Asumimos que esta ruta devuelve una lista de cursos en response.data.cursos o response.data
 
             // Si la respuesta tiene una propiedad 'cursos' (lista) o es directamente la lista

@@ -2,14 +2,26 @@
 
 import React from 'react';
 
+
 // Se reutilizan las clases de estilo de PanelUsuario.css
 export default function CursoAcordeon({ curso, isOpen, onToggle }) {
+    
 
     // Nombre visible en el header
     const cursoNombreVisible = `${curso.nombreMateria} - ${curso.nivel} ${curso.division} (${curso.anio})`;
 
     // Número total de alumnos
     const totalAlumnos = curso.alumnos ? curso.alumnos.length : 0;
+    const [openAlumnoId, setOpenAlumnoId] = useState(null);
+
+    const toggleAlumno = async (dni) => {
+        setOpenAlumnoId(openAlumnoId === dni ? null : dni);
+
+    };
+    
+
+
+
 
     return (
         <div className="usuario-item-card">
